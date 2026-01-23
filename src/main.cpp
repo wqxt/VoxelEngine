@@ -1,9 +1,17 @@
 #include <iostream>
+#include <core/Window.h>
 
 int main(){
 
-    int a;
-    std::cout<<"VoxelEngine started!"<<std::endl;
-    std::cin>>a;
+    Window* window = new Window(1920,720, "Engine");
+
+
+    while (window->ShouldClose() == false)
+    {
+        window->PollEvents();
+        window->SwapBuffer();
+    }
+
+    delete window;
     return 0;
 }

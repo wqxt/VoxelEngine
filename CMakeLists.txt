@@ -18,6 +18,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "")
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
+add_subdirectory(libs/glfw-3.4/glfw-3.4)
+
 file(GLOB_RECURSE SOURCES
     "src/*.cpp"
     "src/*.h"
@@ -29,3 +31,5 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
+
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
