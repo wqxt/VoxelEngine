@@ -21,6 +21,7 @@ private:
     GLuint m_VBO;
     GLuint m_EBO;
     GLuint m_indexCount;
+    GLuint m_colorVBO;
     float m_rotationAngle;
 
     GLuint CompileShader(const char* vertexSrc, const char* fragmentSrc);

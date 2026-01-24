@@ -10,9 +10,9 @@ Window::Window(int width, int height, const char* title)
         return;
     }
 
-    m_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+    m_window = glfwCreateWindow(width, height, title, NULL, NULL);
 
-    if(m_window == nullptr){
+    if(m_window == NULL){
 
         std::cerr << "Falied to create window"<< std::endl;
         glfwTerminate();
