@@ -26,10 +26,16 @@ file(GLOB_RECURSE SOURCES
     "src/*.hpp"
 )
 
-add_executable(${PROJECT_NAME} ${SOURCES})
+set(GLAD_SOURCES
+    libs/glad/src/glad.c
+)
+
+add_executable(${PROJECT_NAME} ${SOURCES} ${GLAD_SOURCES})
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/glad/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/glm
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
