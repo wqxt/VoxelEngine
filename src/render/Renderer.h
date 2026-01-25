@@ -13,7 +13,7 @@ public:
     void Clear();
     void DrawCube();
     void Update(float deltaTime);
-    void Present();
+    //void Present();
 
 private:
     GLuint m_shaderProgram;
