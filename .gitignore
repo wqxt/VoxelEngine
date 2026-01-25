@@ -56,3 +56,8 @@ compile_commands.json
 vcpkg_installed/
 conanbuildinfo.*
 
+# Libraries (will be downloaded automatically via FetchContent)
+libs/glfw/
+libs/glfw-3.4/
+libs/glm/
+!libs/glad/

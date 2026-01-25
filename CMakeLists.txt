@@ -18,7 +18,21 @@ if(CMAKE_BUILD_TYPE STREQUAL "")
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-add_subdirectory(libs/glfw-3.4/glfw-3.4)
+include(FetchContent)
+
+FetchContent_Declare(
+    glfw
+    GIT_REPOSITORY https://github.com/glfw/glfw.git
+    GIT_TAG 3.4
+)
+
+FetchContent_Declare(
+    glm
+    GIT_REPOSITORY https://github.com/g-truc/glm.git
+    GIT_TAG 1.0.1
+)
+
+FetchContent_MakeAvailable(glfw glm)
 
 file(GLOB_RECURSE SOURCES
     "src/*.cpp"
@@ -35,7 +49,7 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${GLAD_SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_SOURCE_DIR}/libs/glad/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/libs/glm
+    ${glm_SOURCE_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
