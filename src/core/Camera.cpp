@@ -85,6 +85,22 @@ void Camera::Update(Input* input,float deltaTime) {
 	{
 		m_position += m_right * m_movementSpeed * deltaTime;
 	}
-	//input->GetMouseDelta(m_yaw, m_pitch);
-	
+
+	float dx, dy;
+
+	input->GetMouseDelta(dx, dy);
+	m_yaw += dx * m_mouseSensitivity;
+	m_pitch -= dy * m_mouseSensitivity;
+
+	if (m_pitch > 89.0f)
+	{
+		m_pitch = 89.0f;
+	}
+	else if ( m_pitch < -89.0f)
+	{
+		m_pitch = -89.0f;
+	}
+
+
+	Camera::UpdateVectors();
 }

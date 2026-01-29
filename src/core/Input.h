@@ -17,6 +17,9 @@ private:
 	static bool keys[1024];
 	static bool previousKeys[1024];
 
-
-
+	static double s_lastMouseX;
+	static double s_lastMouseY;
+	static float s_deltaX;
+	static float s_deltaY;
+	static bool s_firstMouse;
 };

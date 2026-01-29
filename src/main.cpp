@@ -30,7 +30,7 @@ int main() {
 		lastTime = currentTime;
 
 		window.PollEvents();
-	//	input.Update(deltaTime);
+		//input.Update(deltaTime);
 
 		camera.Update(&input,deltaTime);
 		renderer.Update(deltaTime);
