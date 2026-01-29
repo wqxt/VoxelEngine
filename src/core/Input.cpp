@@ -3,12 +3,17 @@
 bool Input::keys[1024] = { false };
 bool Input::previousKeys[1024] = { false };
 
+
+
 void Input::Init(GLFWwindow* window) {
 	m_window = window;
 	glfwSetKeyCallback(window, Input::KeyCallback);
 
 }
 
+Input::~Input() {
+
+}
 
 
 bool Input::IsKeyPressed(int key) {
@@ -24,7 +29,7 @@ void  Input::KeyCallback(GLFWwindow* window, int key, int scancode, int action, 
 	if (action == GLFW_PRESS)
 	{
 		keys[key] = true;
-	
+
 	}
 	else if (action == GLFW_RELEASE)
 	{

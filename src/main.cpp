@@ -20,6 +20,7 @@ int main() {
 	renderer.Init();
 
 	Camera camera;
+	camera.Init();
 
 	auto lastTime = std::chrono::high_resolution_clock::now();
 
@@ -31,7 +32,7 @@ int main() {
 		window.PollEvents();
 	//	input.Update(deltaTime);
 
-		camera.Update(deltaTime);
+		camera.Update(&input,deltaTime);
 		renderer.Update(deltaTime);
 		renderer.Clear();
 		renderer.DrawCube(camera);

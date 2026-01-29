@@ -4,6 +4,7 @@
 class Input {
 public:
 	void Init(GLFWwindow* window);
+	~Input();
 	//void Update(float deltaTime);
 	bool IsKeyPressed(int key);
 	void GetMouseDelta(float& xoffset, float& yoffset);
