@@ -13,6 +13,7 @@ public:
 
 	int GetWidth() const { return m_widgth; }
 	int GetHeigth() const { return m_heigth; }
+	GLFWwindow* GetGLFWWindow() const { return m_window; }
 
 	bool ShouldClose() const;
 

@@ -1,30 +1,42 @@
 #include <glad/glad.h>  
 #include <iostream>
 #include <core/Window.h>
+#include <core/Camera.h>
+#include <core/Input.h>
 #include <render/Renderer.h>
 #include <chrono>
 
 int main() {
-    Window window(1600, 720, "VoxelEngine");
-    window.PollEvents();
+	Window window(1600, 720, "VoxelEngine");
 
-    Renderer renderer;
-    renderer.Init();
+	GLFWwindow* glfwWindow = const_cast<GLFWwindow*>(window.GetGLFWWindow());
 
-    auto lastTime = std::chrono::high_resolution_clock::now();
+	Input input;
+	input.Init(glfwWindow);
 
-    while (!window.ShouldClose()) {
-        auto currentTime = std::chrono::high_resolution_clock::now();
-        float deltaTime = std::chrono::duration<float>(currentTime - lastTime).count();
-        lastTime = currentTime;
+	window.PollEvents();
 
-        window.PollEvents();
+	Renderer renderer;
+	renderer.Init();
 
-        renderer.Update(deltaTime);
-        renderer.Clear();
-        renderer.DrawCube();
-        window.SwapBuffer();
-    }
+	Camera camera;
 
-    return 0;
+	auto lastTime = std::chrono::high_resolution_clock::now();
+
+	while (!window.ShouldClose()) {
+		auto currentTime = std::chrono::high_resolution_clock::now();
+		float deltaTime = std::chrono::duration<float>(currentTime - lastTime).count();
+		lastTime = currentTime;
+
+		window.PollEvents();
+	//	input.Update(deltaTime);
+
+		camera.Update(deltaTime);
+		renderer.Update(deltaTime);
+		renderer.Clear();
+		renderer.DrawCube(camera);
+		window.SwapBuffer();
+	}
+
+	return 0;
 }

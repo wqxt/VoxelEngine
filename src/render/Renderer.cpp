@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include "core/Camera.h"
 #include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -179,19 +180,17 @@ void Renderer::SetupCubeData() {
 }
 
 
-void Renderer::DrawCube() {
-
+void Renderer::DrawCube(const Camera& camera) {
 	glUseProgram(m_shaderProgram);
+	
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::rotate(model, glm::radians(m_rotationAngle), glm::vec3(1.0f, 1.0f, 0.0f));
-	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.0f));
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
-
+	glm::mat4 view = camera.GetViewMatrix();
+	glm::mat4 projection = camera.GetProjectionMatrix();
 
 	glUniformMatrix4fv(glGetUniformLocation(m_shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
 	glUniformMatrix4fv(glGetUniformLocation(m_shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(glGetUniformLocation(m_shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
 
 	glBindVertexArray(m_VAO);
 	glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, 0);
