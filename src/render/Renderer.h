@@ -1,5 +1,6 @@
 #pragma once
-
+#include "Shader.h"
+#include "Mesh.h"
 #include <glad/glad.h>
 #include <vector>
 #include <glm/glm.hpp>
@@ -10,22 +11,7 @@ public:
     ~Renderer();
 
     void Init();
-    void Clear();
-    void Draw(const Camera& camera);
-    void Update(float deltaTime);
-
-
-private:
-    const char* vertexShaderSource;
-	const char* fragmentShaderSource;
-    GLuint m_shaderProgram;
-    GLuint m_VAO;
-    GLuint m_VBO;
-    GLuint m_EBO;
-    GLuint m_indexCount;
-    GLuint m_colorVBO;
-    float m_rotationAngle;
-
-    GLuint CompileShader(const char* vertexSrc, const char* fragmentSrc);
-    void SetupCubeData();
+	void Clear();
+    void Draw(Shader& shader, Mesh& mesh, const glm::mat4& view, 
+        const glm::mat4& projection, const glm::mat4& model);
 };
