@@ -19,7 +19,7 @@ static void buildGridTile(int segments, float y,
 
 	for (int iz = 0; iz < side; ++iz)
 	{
-		for (int ix = 0; ix < side; ++ix) 
+		for (int ix = 0; ix < side; ++ix)
 		{
 			outVertices.push_back(ix / (float)segments);
 			outVertices.push_back(y);
@@ -32,7 +32,7 @@ static void buildGridTile(int segments, float y,
 
 	for (int iz = 0; iz < side; ++iz)
 	{
-		for (int ix = 0; ix < segments; ++ix) 
+		for (int ix = 0; ix < segments; ++ix)
 		{
 			outIndices.push_back(iz * side + ix);
 			outIndices.push_back(iz * side + ix + 1);
@@ -42,7 +42,7 @@ static void buildGridTile(int segments, float y,
 
 	for (int ix = 0; ix < side; ++ix)
 	{
-		for (int iz = 0; iz < segments; ++iz) 
+		for (int iz = 0; iz < segments; ++iz)
 		{
 			outIndices.push_back(iz * side + ix);
 			outIndices.push_back((iz + 1) * side + ix);
@@ -138,13 +138,18 @@ int main() {
 		model = glm::rotate(model, glm::radians(rotationAngle), glm::vec3(1, 1, 0));
 
 		renderer.Clear();
+
 		for (int tz = 0; tz < gridTilesPerAxis; ++tz)
-			for (int tx = 0; tx < gridTilesPerAxis; ++tx) {
+		{
+			for (int tx = 0; tx < gridTilesPerAxis; ++tx)
+			{
 				glm::mat4 tileModel = glm::translate(glm::mat4(1.f),
-					glm::vec3(tx - gridHalf, 0.f, tz - gridHalf));
+				glm::vec3(tx - gridHalf, 0.f, tz - gridHalf));
 				renderer.DrawLines(shader, gridTileMesh, camera.GetViewMatrix(),
-					camera.GetProjectionMatrix(), tileModel);
+				camera.GetProjectionMatrix(), tileModel);
 			}
+		}
+
 		renderer.Draw(shader, cubeMesh, camera.GetViewMatrix(),
 			camera.GetProjectionMatrix(), model);
 		window.SwapBuffer();
