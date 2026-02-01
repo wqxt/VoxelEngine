@@ -1,6 +1,5 @@
 #include "Renderer.h"
 #include "core/Camera.h"
-#include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -15,10 +14,6 @@ void Renderer::Init() {
 
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-
-	//m_shaderProgram = CompileShader(vertexShaderSource, fragmentShaderSource);
-	//SetupCubeData();
-
 }
 
 void Renderer::Clear() {
@@ -33,4 +28,13 @@ void Renderer::Draw(Shader& shader, Mesh& mesh, const glm::mat4& view,
 	shader.SetMat4("model", model);
 	shader.SetMat4("projection", projection);
 	mesh.Draw();
+}
+
+void Renderer::DrawLines(Shader& shader, Mesh& mesh, const glm::mat4& view,
+	const glm::mat4& projection, const glm::mat4& model) {
+	shader.Use();
+	shader.SetMat4("view", view);
+	shader.SetMat4("model", model);
+	shader.SetMat4("projection", projection);
+	mesh.DrawLines();
 }

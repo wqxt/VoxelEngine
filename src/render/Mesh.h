@@ -10,6 +10,7 @@ public:
 	void Init(const float* positions, size_t posCount, const float* colors, 
 		size_t colorCount, const GLuint* indices, size_t indexCount);
 	void Draw();
+	void DrawLines();
 
 private:
 	GLuint m_VAO; 
