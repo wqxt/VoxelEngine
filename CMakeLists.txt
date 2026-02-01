@@ -46,6 +46,12 @@ set(GLAD_SOURCES
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${GLAD_SOURCES})
 
+file(GLOB SHADER_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders/*.vert"
+    "${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders/*.frag"
+)
+add_custom_target(Shaders SOURCES ${SHADER_FILES})
+
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_SOURCE_DIR}/libs/glad/include

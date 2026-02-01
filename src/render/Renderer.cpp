@@ -6,35 +6,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
-const char* vertexShaderSource = R"(
-    #version 460 core
-    layout (location = 0) in vec3 position;
-    layout (location = 1) in vec3 color;
-    
-    uniform mat4 projection;
-    uniform mat4 view;
-    uniform mat4 model;
-    
-    out vec3 vertexColor;
-    
-    void main()
-    {
-        gl_Position = projection * view * model * vec4(position, 1.0);
-        vertexColor = color;
-    }
-)";
-
-const char* fragmentShaderSource = R"(
-    #version 460 core
-    in vec3 vertexColor;
-    out vec4 FragColor;
-    
-    void main()
-    {
-        FragColor = vec4(vertexColor, 1.0);
-    }
-)";
-
+//const char* vertexShaderSource;
+//const char* fragmentShaderSource;
 
 Renderer::Renderer() : m_shaderProgram(), m_VAO(0), m_VBO(0), m_EBO(0), m_indexCount(0), m_rotationAngle(0.0f), m_colorVBO(0) {
 
@@ -62,6 +35,7 @@ Renderer::~Renderer() {
 }
 
 
+
 void Renderer::Init() {
 
 	gladLoadGL();
@@ -69,8 +43,8 @@ void Renderer::Init() {
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-	m_shaderProgram = CompileShader(vertexShaderSource, fragmentShaderSource);
-	SetupCubeData();
+	//m_shaderProgram = CompileShader(vertexShaderSource, fragmentShaderSource);
+	//SetupCubeData();
 
 }
 
@@ -79,47 +53,7 @@ void Renderer::Clear() {
 }
 
 
-GLuint Renderer::CompileShader(const char* vertexSrc, const char* fragmentSrc) {
 
-	int success;
-	char infoLog[512];
-
-	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexSrc, NULL);
-	glCompileShader(vertexShader);
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	if (!success) {
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		std::cerr << "Vertex shader error: " << infoLog << std::endl;
-	}
-
-
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentSrc, NULL);
-	glCompileShader(fragmentShader);
-	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-	if (!success) {
-		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-		std::cerr << "Fragment shader error: " << infoLog << std::endl;
-	}
-
-	GLuint program = glCreateProgram();
-	glAttachShader(program, vertexShader);
-	glAttachShader(program, fragmentShader);
-	glLinkProgram(program);
-	glGetProgramiv(program, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(program, 512, NULL, infoLog);
-		std::cerr << "Link shader error: " << infoLog << std::endl;
-	}
-
-
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
-	return program;
-
-}
 
 void Renderer::SetupCubeData() {
 
@@ -180,21 +114,8 @@ void Renderer::SetupCubeData() {
 }
 
 
-void Renderer::DrawCube(const Camera& camera) {
-	glUseProgram(m_shaderProgram);
-	
-	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::rotate(model, glm::radians(m_rotationAngle), glm::vec3(1.0f, 1.0f, 0.0f));
-	glm::mat4 view = camera.GetViewMatrix();
-	glm::mat4 projection = camera.GetProjectionMatrix();
+void Renderer::Draw(const Camera& camera) {
 
-	glUniformMatrix4fv(glGetUniformLocation(m_shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
-	glUniformMatrix4fv(glGetUniformLocation(m_shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
-	glUniformMatrix4fv(glGetUniformLocation(m_shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
-	glBindVertexArray(m_VAO);
-	glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
 }
 
 void Renderer::Update(float deltaTime) {

@@ -4,8 +4,6 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-class Camera;
-
 class Renderer {
 public:
     Renderer();
@@ -13,10 +11,13 @@ public:
 
     void Init();
     void Clear();
-    void DrawCube(const Camera& camera);
+    void Draw(const Camera& camera);
     void Update(float deltaTime);
 
+
 private:
+    const char* vertexShaderSource;
+	const char* fragmentShaderSource;
     GLuint m_shaderProgram;
     GLuint m_VAO;
     GLuint m_VBO;
