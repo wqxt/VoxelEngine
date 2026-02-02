@@ -6,6 +6,7 @@
 #include <render/Renderer.h>
 #include <render/Mesh.h>
 #include <render/Shader.h>
+#include <voxel/Voxel.h>
 #include <chrono>
 #include <vector>
 
@@ -70,23 +71,23 @@ int main() {
 	};
 
 	float colors[] = {
-	1.0f, 0.0f, 0.0f,  // red (vertex 0)
-	0.0f, 1.0f, 0.0f,  // green (vertex 1)
-	0.0f, 0.0f, 1.0f,  // blue (vertex 2)
-	1.0f, 1.0f, 0.0f,  // yellow (vertex 3)
-	1.0f, 0.0f, 1.0f,  // magenta (vertex 4)
-	0.0f, 1.0f, 1.0f,  // cyan (vertex 5)
-	1.0f, 1.0f, 1.0f,  // white (vertex 6)
-	0.5f, 0.5f, 0.5f,  // gray (vertex 7)
+		1.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 1.0f,
+		1.0f, 1.0f, 0.0f,
+		1.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f,
+		0.5f, 0.5f, 0.5f,
 	};
 
 	GLuint indices[] = {
-		0, 1, 5, 5, 4, 0,  // left face
-		2, 3, 7, 7, 6, 2,  // right face
-		0, 2, 3, 3, 1, 0,  // back face
-		4, 5, 7, 7, 6, 4,  // front face
-		0, 4, 6, 6, 2, 0,  // bottom face
-		1, 3, 7, 7, 5, 1   // top face
+		0, 1, 5, 5, 4, 0,
+		2, 3, 7, 7, 6, 2,
+		0, 2, 3, 3, 1, 0,
+		4, 5, 7, 7, 6, 4,
+		0, 4, 6, 6, 2, 0,
+		1, 3, 7, 7, 5, 1
 	};
 
 	const int gridTileSegments = 4;
@@ -111,7 +112,9 @@ int main() {
 	const int gridTilesPerAxis = 9;
 	const int gridHalf = gridTilesPerAxis / 2;
 
-
+	Voxel voxel;
+	int vx = 0, vy = 0, vz = 0;
+	voxel.SetPosition(vx, vy, vz);
 
 	Input input;
 	input.Init(glfwWindow);
@@ -122,36 +125,26 @@ int main() {
 	camera.Init();
 
 	auto lastTime = std::chrono::high_resolution_clock::now();
-	float rotationAngle = 0.f;
 	while (!window.ShouldClose()) {
 		auto currentTime = std::chrono::high_resolution_clock::now();
 		float deltaTime = std::chrono::duration<float>(currentTime - lastTime).count();
 		lastTime = currentTime;
 
 		window.PollEvents();
-
-
 		camera.Update(&input, deltaTime);
 
-		rotationAngle += deltaTime * 50.f;
-		glm::mat4 model = glm::mat4(1.f);
-		model = glm::rotate(model, glm::radians(rotationAngle), glm::vec3(1, 1, 0));
-
 		renderer.Clear();
-
 		for (int tz = 0; tz < gridTilesPerAxis; ++tz)
-		{
-			for (int tx = 0; tx < gridTilesPerAxis; ++tx)
-			{
+			for (int tx = 0; tx < gridTilesPerAxis; ++tx) {
 				glm::mat4 tileModel = glm::translate(glm::mat4(1.f),
-				glm::vec3(tx - gridHalf, 0.f, tz - gridHalf));
+					glm::vec3(tx - gridHalf, 0.f, tz - gridHalf));
 				renderer.DrawLines(shader, gridTileMesh, camera.GetViewMatrix(),
-				camera.GetProjectionMatrix(), tileModel);
+					camera.GetProjectionMatrix(), tileModel);
 			}
-		}
 
+		glm::mat4 voxelModel = glm::translate(glm::mat4(1.f), glm::vec3(voxel.GetPosition()));
 		renderer.Draw(shader, cubeMesh, camera.GetViewMatrix(),
-			camera.GetProjectionMatrix(), model);
+			camera.GetProjectionMatrix(), voxelModel);
 		window.SwapBuffer();
 	}
 	return 0;
