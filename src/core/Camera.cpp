@@ -85,6 +85,14 @@ void Camera::Update(Input* input,float deltaTime) {
 	{
 		m_position += m_right * m_movementSpeed * deltaTime;
 	}
+	if (input-> IsKeyPressed(GLFW_KEY_LEFT_SHIFT))
+	{
+		m_position += m_worldUp * m_movementSpeed * deltaTime;
+	}
+	if (input -> IsKeyPressed(GLFW_KEY_LEFT_CONTROL))
+	{
+		m_position -= m_worldUp * m_movementSpeed * deltaTime;
+	}
 
 	float dx, dy;
 

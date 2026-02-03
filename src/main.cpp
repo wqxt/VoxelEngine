@@ -6,7 +6,8 @@
 #include <render/Renderer.h>
 #include <render/Mesh.h>
 #include <render/Shader.h>
-#include <voxel/Voxel.h>
+#include <voxel/VoxelData.h>
+#include <voxel/VoxelMeshGenerator.h>
 #include <chrono>
 #include <vector>
 
@@ -59,37 +60,6 @@ int main() {
 	Renderer renderer;
 	renderer.Init();
 
-	float vertices[] = {
-	-0.5f, -0.5f, -0.5f,
-	-0.5f, 0.5f, -0.5f,
-	-0.5f, -0.5f, 0.5f,
-	-0.5f, 0.5f, 0.5f,
-	0.5f, -0.5f, -0.5f,
-	0.5f, 0.5f, -0.5f,
-	0.5f, -0.5f, 0.5f,
-	0.5f, 0.5f, 0.5f,
-	};
-
-	float colors[] = {
-		1.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 1.0f,
-		1.0f, 1.0f, 0.0f,
-		1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f,
-		0.5f, 0.5f, 0.5f,
-	};
-
-	GLuint indices[] = {
-		0, 1, 5, 5, 4, 0,
-		2, 3, 7, 7, 6, 2,
-		0, 2, 3, 3, 1, 0,
-		4, 5, 7, 7, 6, 4,
-		0, 4, 6, 6, 2, 0,
-		1, 3, 7, 7, 5, 1
-	};
-
 	const int gridTileSegments = 4;
 	const float gridY = -0.8f;
 	std::vector<float> tileVertices, tileColors;
@@ -99,10 +69,11 @@ int main() {
 	Shader shader;
 	shader.LoadFromFiles("../../assets/shaders/default.vert", "../../assets/shaders/default.frag");
 
+	VoxelData voxelData(1, 1, 1);
+	voxelData.SetType(0, 0, 0, VoxelType::Stone);
 	Mesh cubeMesh;
-	cubeMesh.Init(vertices, sizeof(vertices) / sizeof(float),
-		colors, sizeof(colors) / sizeof(float),
-		indices, sizeof(indices) / sizeof(GLuint));
+	VoxelMeshGenerator voxelgenerator;
+	voxelgenerator.GenerateMesh(voxelData, cubeMesh);
 
 	Mesh gridTileMesh;
 	gridTileMesh.Init(tileVertices.data(), tileVertices.size(),
@@ -111,10 +82,6 @@ int main() {
 
 	const int gridTilesPerAxis = 9;
 	const int gridHalf = gridTilesPerAxis / 2;
-
-	Voxel voxel;
-	int vx = 0, vy = 0, vz = 0;
-	voxel.SetPosition(vx, vy, vz);
 
 	Input input;
 	input.Init(glfwWindow);
@@ -134,15 +101,17 @@ int main() {
 		camera.Update(&input, deltaTime);
 
 		renderer.Clear();
-		for (int tz = 0; tz < gridTilesPerAxis; ++tz)
+		for (int tz = 0; tz < gridTilesPerAxis; ++tz){
 			for (int tx = 0; tx < gridTilesPerAxis; ++tx) {
 				glm::mat4 tileModel = glm::translate(glm::mat4(1.f),
 					glm::vec3(tx - gridHalf, 0.f, tz - gridHalf));
 				renderer.DrawLines(shader, gridTileMesh, camera.GetViewMatrix(),
 					camera.GetProjectionMatrix(), tileModel);
 			}
+		}
 
-		glm::mat4 voxelModel = glm::translate(glm::mat4(1.f), glm::vec3(voxel.GetPosition()));
+
+		glm::mat4 voxelModel = glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, 0.f));
 		renderer.Draw(shader, cubeMesh, camera.GetViewMatrix(),
 			camera.GetProjectionMatrix(), voxelModel);
 		window.SwapBuffer();

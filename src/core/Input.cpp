@@ -38,6 +38,7 @@ void Input::KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
 	(void)window;
 	(void)scancode;
 	(void)mods;
+
 	if (action == GLFW_PRESS)
 	{
 		keys[key] = true;
@@ -60,6 +61,7 @@ void Input::MouseCallback(GLFWwindow* window, double xpos, double ypos) {
 		s_firstMouse = false;
 		return;
 	}
+
 	s_deltaX += static_cast<float>(xpos - s_lastMouseX);
 	s_deltaY -= static_cast<float>(s_lastMouseY - ypos);
 	s_lastMouseX = xpos;

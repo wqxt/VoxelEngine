@@ -19,6 +19,7 @@ private:
 
 	static double s_lastMouseX;
 	static double s_lastMouseY;
+
 	static float s_deltaX;
 	static float s_deltaY;
 	static bool s_firstMouse;
