@@ -86,6 +86,10 @@ int main() {
 		prevLmb = lmbNow;
 
 		renderer.Clear();
+
+
+		glm::mat4 worldModel = glm::mat4(1.f);
+		renderer.Draw(shader, worldMesh, camera.GetViewMatrix(), camera.GetProjectionMatrix(), worldModel);
 		if (hit.hit) {
 			float ox = static_cast<float>(hit.blockPos.x) + 0.5f;
 			float oy = static_cast<float>(hit.blockPos.y) + 0.5f;
@@ -94,8 +98,6 @@ int main() {
 			targetOutline.Draw(camera, renderer, shader);
 		}
 		crosshair.Draw(camera, renderer, shader);
-		glm::mat4 worldModel = glm::mat4(1.f);
-		renderer.Draw(shader, worldMesh, camera.GetViewMatrix(), camera.GetProjectionMatrix(), worldModel);
 		window.SwapBuffer();
 	}
 	return 0;

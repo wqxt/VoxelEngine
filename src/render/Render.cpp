@@ -32,9 +32,11 @@ void Render::Draw(Shader& shader, Mesh& mesh, const glm::mat4& view,
 
 void Render::DrawLines(Shader& shader, Mesh& mesh, const glm::mat4& view,
 	const glm::mat4& projection, const glm::mat4& model) {
+	glDisable(GL_DEPTH_TEST);
 	shader.Use();
 	shader.SetMat4("view", view);
 	shader.SetMat4("model", model);
 	shader.SetMat4("projection", projection);
 	mesh.DrawLines();
+	glEnable(GL_DEPTH_TEST);
 }
