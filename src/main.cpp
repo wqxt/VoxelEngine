@@ -32,13 +32,23 @@ int main() {
 	shader.LoadFromFiles("../../assets/shaders/default.vert", "../../assets/shaders/default.frag");
 
 	const int worldSizeX = 5;
-	const int worldSizeY = 2;
+	const int worldSizeY = 4;
 	const int worldSizeZ = 5;
 	VoxelData voxelData(worldSizeX, worldSizeY, worldSizeZ);
-	for (int z = 0; z < worldSizeZ; ++z)
-		for (int y = 0; y < worldSizeY; ++y)
-			for (int x = 0; x < worldSizeX; ++x)
-				voxelData.SetType(x, y, z, (y == 0) ? VoxelType::Stone : VoxelType::Grass);
+	for (int z = 0; z < worldSizeZ; ++z) {
+		for (int y = 0; y < worldSizeY; ++y) {
+			for (int x = 0; x < worldSizeX; ++x) {
+				if (y == 0) {
+					voxelData.SetType(x, y, z, VoxelType::Stone);
+				}
+				else if (y == worldSizeY - 1) {
+					voxelData.SetType(x, y, z, VoxelType::Grass);
+				}
+				else
+					voxelData.SetType(x, y, z, VoxelType::Dirt);
+			}
+		}
+	}
 
 	Mesh worldMesh;
 	VoxelMeshGenerator::GenerateMesh(voxelData, worldMesh);
@@ -75,7 +85,7 @@ int main() {
 			if (x < 0 || x >= worldSizeX || y < 0 || y >= worldSizeY || z < 0 || z >= worldSizeZ)
 				return false;
 			return voxelData.GetType(x, y, z) != VoxelType::Air;
-		};
+			};
 		RaycastHit hit = Raycast::Cast(camera.GetPosition(), camera.GetFront(), raycastMaxDist, isSolid);
 
 		bool lmbNow = input.IsMouseKeyPressed(GLFW_MOUSE_BUTTON_LEFT);
