@@ -1,7 +1,6 @@
 #include <render/Mesh.h>
 
-Mesh::Mesh()
-	: m_VAO(0), m_VBO(0), m_EBO(0), m_colorVBO(0), m_indexCount(0)
+Mesh::Mesh() : m_VAO(0), m_VBO(0), m_EBO(0), m_colorVBO(0), m_indexCount(0)
 {
 	glGenVertexArrays(1, &m_VAO);
 	glGenBuffers(1, &m_VBO);

@@ -1,14 +1,14 @@
-#include "Renderer.h"
+#include "Render.h"
 #include "core/Camera.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-Renderer::Renderer(){}
+Render::Render(){}
 
-Renderer::~Renderer() {}
+Render::~Render() {}
 
-void Renderer::Init() {
+void Render::Init() {
 
 	gladLoadGL();
 
@@ -16,11 +16,11 @@ void Renderer::Init() {
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 }
 
-void Renderer::Clear() {
+void Render::Clear() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::Draw(Shader& shader, Mesh& mesh, const glm::mat4& view,
+void Render::Draw(Shader& shader, Mesh& mesh, const glm::mat4& view,
 	const glm::mat4& projection, const glm::mat4& model) {
 
 	shader.Use();
@@ -30,7 +30,7 @@ void Renderer::Draw(Shader& shader, Mesh& mesh, const glm::mat4& view,
 	mesh.Draw();
 }
 
-void Renderer::DrawLines(Shader& shader, Mesh& mesh, const glm::mat4& view,
+void Render::DrawLines(Shader& shader, Mesh& mesh, const glm::mat4& view,
 	const glm::mat4& projection, const glm::mat4& model) {
 	shader.Use();
 	shader.SetMat4("view", view);

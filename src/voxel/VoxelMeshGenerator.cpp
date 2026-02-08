@@ -12,6 +12,16 @@ static bool isSolid(const VoxelData& data, int x, int y, int z)
 	return data.GetType(x, y, z) != VoxelType::Air;
 }
 
+static void colorForType(uint8_t type, float& r, float& g, float& b)
+{
+	switch (type) {
+		case VoxelType::Stone: r = 0.5f;  g = 0.5f;  b = 0.55f; break;
+		case VoxelType::Dirt:  r = 0.45f; g = 0.35f; b = 0.25f; break;
+		case VoxelType::Grass: r = 0.2f;  g = 0.6f;  b = 0.2f;  break;
+		default:               r = 0.5f;  g = 0.5f;  b = 0.5f;  break;
+	}
+}
+
 static void addQuad(std::vector<float>& positions, std::vector<float>& colors,
 	std::vector<GLuint>& indices,
 	float x0, float y0, float z0, float x1, float y1, float z1,
@@ -35,46 +45,59 @@ void VoxelMeshGenerator::GenerateMesh(const VoxelData& data, Mesh& outMesh)
 	std::vector<float> positions;
 	std::vector<float> colors;
 	std::vector<GLuint> indices;
-	const float r = 0.5f, g = 0.5f, b = 0.5f;
 
 	for (int z = 0; z < data.GetSizeZ(); ++z) {
 		for (int y = 0; y < data.GetSizeY(); ++y) {
 			for (int x = 0; x < data.GetSizeX(); ++x) {
-				if (data.GetType(x, y, z) == VoxelType::Air) continue;
+				uint8_t type = data.GetType(x, y, z);
+				if (type == VoxelType::Air) continue;
+
+				float cr, cg, cb;
+				colorForType(type, cr, cg, cb);
 
 				float fx = static_cast<float>(x);
 				float fy = static_cast<float>(y);
 				float fz = static_cast<float>(z);
 
+				const float topShade = 1.f;
+				const float bottomShade = 0.45f;
+				const float sideShade = 0.75f;
+
 				if (!isSolid(data, x + 1, y, z)) {
 					addQuad(positions, colors, indices,
 						fx + 1, fy, fz, fx + 1, fy + 1, fz,
-						fx + 1, fy + 1, fz + 1, fx + 1, fy, fz + 1, r, g, b);
+						fx + 1, fy + 1, fz + 1, fx + 1, fy, fz + 1,
+						cr * sideShade, cg * sideShade, cb * sideShade);
 				}
 				if (!isSolid(data, x - 1, y, z)) {
 					addQuad(positions, colors, indices,
 						fx, fy, fz + 1, fx, fy + 1, fz + 1,
-						fx, fy + 1, fz, fx, fy, fz, r, g, b);
+						fx, fy + 1, fz, fx, fy, fz,
+						cr * sideShade, cg * sideShade, cb * sideShade);
 				}
 				if (!isSolid(data, x, y + 1, z)) {
 					addQuad(positions, colors, indices,
 						fx, fy + 1, fz, fx + 1, fy + 1, fz,
-						fx + 1, fy + 1, fz + 1, fx, fy + 1, fz + 1, r, g, b);
+						fx + 1, fy + 1, fz + 1, fx, fy + 1, fz + 1,
+						cr * topShade, cg * topShade, cb * topShade);
 				}
 				if (!isSolid(data, x, y - 1, z)) {
 					addQuad(positions, colors, indices,
 						fx, fy, fz + 1, fx + 1, fy, fz + 1,
-						fx + 1, fy, fz, fx, fy, fz, r, g, b);
+						fx + 1, fy, fz, fx, fy, fz,
+						cr * bottomShade, cg * bottomShade, cb * bottomShade);
 				}
 				if (!isSolid(data, x, y, z + 1)) {
 					addQuad(positions, colors, indices,
 						fx + 1, fy, fz + 1, fx + 1, fy + 1, fz + 1,
-						fx, fy + 1, fz + 1, fx, fy, fz + 1, r, g, b);
+						fx, fy + 1, fz + 1, fx, fy, fz + 1,
+						cr * sideShade, cg * sideShade, cb * sideShade);
 				}
 				if (!isSolid(data, x, y, z - 1)) {
 					addQuad(positions, colors, indices,
 						fx, fy, fz, fx + 1, fy, fz,
-						fx + 1, fy + 1, fz, fx, fy + 1, fz, r, g, b);
+						fx + 1, fy + 1, fz, fx, fy + 1, fz,
+						cr * sideShade, cg * sideShade, cb * sideShade);
 				}
 			}
 		}

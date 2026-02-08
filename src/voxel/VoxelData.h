@@ -5,6 +5,7 @@
 class VoxelData {
 
 public:
+
 	VoxelData(int sizeX, int sizeY, int sizeZ);
 	uint8_t GetType(int x, int y, int z) const;
 	void SetType(int x, int y, int z, uint8_t type);

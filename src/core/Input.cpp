@@ -27,6 +27,10 @@ bool Input::IsKeyPressed(int key) {
 	return keys[key];
 }
 
+bool Input::IsMouseKeyPressed(int key) {
+	return glfwGetMouseButton(m_window, key) == GLFW_PRESS;
+}
+
 void Input::GetMouseDelta(float& xoffset, float& yoffset) {
 	xoffset = s_deltaX;
 	yoffset = s_deltaY;

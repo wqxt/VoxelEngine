@@ -1,5 +1,6 @@
 #include "VoxelData.h"
 
+
 VoxelData::VoxelData(int sizeX, int sizeY, int sizeZ): m_sizeX(sizeX), m_sizeY(sizeY), m_sizeZ(sizeZ) {
 	m_data.resize(sizeX * sizeY * sizeZ);
 }

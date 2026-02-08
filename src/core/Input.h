@@ -7,6 +7,8 @@ public:
 	~Input();
 	//void Update(float deltaTime);
 	bool IsKeyPressed(int key);
+	bool IsMouseKeyPressed(int key);
+	
 	void GetMouseDelta(float& xoffset, float& yoffset);
 	static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void MouseCallback(GLFWwindow* window, double xpos, double ypos);

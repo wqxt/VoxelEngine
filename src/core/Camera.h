@@ -16,6 +16,8 @@ public:
 	void UpdateVectors();
 	glm::mat4 GetViewMatrix() const;
 	glm::mat4 GetProjectionMatrix() const;
+	glm::vec3 GetPosition() const;
+	glm::vec3 GetFront() const;
 
 	void Update(Input* input,float deltaTime);
 
