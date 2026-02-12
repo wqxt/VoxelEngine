@@ -16,8 +16,6 @@
 #include <debug/Crosshair.h>
 #include <debug/TargetOutline.h>
 
-
-
 int main() {
 
 	Window window(1600, 720, "VoxelEngine");
@@ -26,35 +24,19 @@ int main() {
 	Render renderer;
 	renderer.Init();
 
-
-
 	Shader shader;
 	shader.LoadFromFiles("../../assets/shaders/default.vert", "../../assets/shaders/default.frag");
 
-	const int worldSizeX = 5;
-	const int worldSizeY = 4;
-	const int worldSizeZ = 5;
-	VoxelData voxelData(worldSizeX, worldSizeY, worldSizeZ);
-	for (int z = 0; z < worldSizeZ; ++z) {
-		for (int y = 0; y < worldSizeY; ++y) {
-			for (int x = 0; x < worldSizeX; ++x) {
-				if (y == 0) {
-					voxelData.SetType(x, y, z, VoxelType::Stone);
-				}
-				else if (y == worldSizeY - 1) {
-					voxelData.SetType(x, y, z, VoxelType::Grass);
-				}
-				else
-					voxelData.SetType(x, y, z, VoxelType::Dirt);
-			}
-		}
-	}
-
-	Mesh worldMesh;
-	VoxelMeshGenerator::GenerateMesh(voxelData, worldMesh);
+	const int chunkSizeX = 5;
+	const int chunkSizeY = 5;
+	const int chunkSizeZ = 5;
+	const int gridX = 3;
+	const int gridY = 1;
+	const int gridZ = 3;
 
 	ChunkController chunkController;
-	chunkController.Init(3, 1, 3);
+	chunkController.InitGrid(gridX, gridY, gridZ);
+	chunkController.SetupChunks(chunkSizeX, chunkSizeY, chunkSizeZ);
 
 	Input input;
 	input.Init(glfwWindow);
@@ -72,6 +54,9 @@ int main() {
 	const float raycastMaxDist = 10.f;
 	bool prevLmb = false;
 	auto lastTime = std::chrono::high_resolution_clock::now();
+
+
+
 	while (!window.ShouldClose()) {
 
 		auto currentTime = std::chrono::high_resolution_clock::now();
@@ -81,25 +66,45 @@ int main() {
 		window.PollEvents();
 		camera.Update(&input, deltaTime);
 
-		auto isSolid = [&voxelData, worldSizeX, worldSizeY, worldSizeZ](int x, int y, int z) {
-			if (x < 0 || x >= worldSizeX || y < 0 || y >= worldSizeY || z < 0 || z >= worldSizeZ)
-				return false;
-			return voxelData.GetType(x, y, z) != VoxelType::Air;
-			};
-		RaycastHit hit = Raycast::Cast(camera.GetPosition(), camera.GetFront(), raycastMaxDist, isSolid);
+
+
+		RaycastHit hit = Raycast::Cast(camera.GetPosition(), camera.GetFront(), raycastMaxDist, chunkController.GetIsSolidCallback());
 
 		bool lmbNow = input.IsMouseKeyPressed(GLFW_MOUSE_BUTTON_LEFT);
 		if (lmbNow && !prevLmb && hit.hit) {
-			voxelData.SetType(hit.blockPos.x, hit.blockPos.y, hit.blockPos.z, VoxelType::Air);
-			VoxelMeshGenerator::GenerateMesh(voxelData, worldMesh);
+
+			int chunkNumX = hit.blockPos.x / chunkSizeX;
+			int chunkNumY = hit.blockPos.y / chunkSizeY;
+			int chunkNumZ = hit.blockPos.z / chunkSizeZ;
+
+			int chunkBlockNumX = hit.blockPos.x % chunkSizeX;
+			int chunkBlockNumY = hit.blockPos.y % chunkSizeY;
+			int chunkBlockNumZ = hit.blockPos.z % chunkSizeZ;
+
+			size_t linearChunkIndex = static_cast<size_t>(chunkNumX + chunkNumY * gridX + chunkNumZ * gridX * gridY);
+			chunkController.SetVoxelType(chunkBlockNumX, chunkBlockNumY, chunkBlockNumZ, VoxelType::Air, linearChunkIndex);
+
+			chunkController.SetChunkDirty(chunkNumX, chunkNumY, chunkNumZ);
+			chunkController.RebuildChunk(chunkNumX, chunkNumY, chunkNumZ);
 		}
 		prevLmb = lmbNow;
 
 		renderer.Clear();
 
+		for (const Chunk& chunk : chunkController.GetChunks()) {
+			Mesh* mesh = chunk.GetMesh();
+			if (!mesh) {
 
-		glm::mat4 worldModel = glm::mat4(1.f);
-		renderer.Draw(shader, worldMesh, camera.GetViewMatrix(), camera.GetProjectionMatrix(), worldModel);
+				continue;
+			}
+			const glm::ivec3& pos = chunk.GetPosition();
+			glm::mat4 model = glm::translate(glm::mat4(1.f), glm::vec3(
+				static_cast<float>(pos.x * chunkSizeX),
+				static_cast<float>(pos.y * chunkSizeY),
+				static_cast<float>(pos.z * chunkSizeZ)));
+			renderer.Draw(shader, *mesh, camera.GetViewMatrix(), camera.GetProjectionMatrix(), model);
+		}
+
 		if (hit.hit) {
 			float ox = static_cast<float>(hit.blockPos.x) + 0.5f;
 			float oy = static_cast<float>(hit.blockPos.y) + 0.5f;
