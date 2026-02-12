@@ -47,7 +47,7 @@ RaycastHit Raycast::Cast(const glm::vec3& origin, const glm::vec3& direction, fl
 			return result;
 		}
 
-		if (isSolid(ix, iy, iz)) {
+		if (isSolid(ix, iy, iz) && lastStepAxis >= 0) {
 			result.hit = true;
 			result.blockPos = glm::ivec3(ix, iy, iz);
 

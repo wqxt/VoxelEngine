@@ -5,13 +5,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-TargetOutline::TargetOutline() {
-}
+TargetOutline::TargetOutline() {}
 
-TargetOutline::~TargetOutline() {
-}
+TargetOutline::~TargetOutline() {}
 
-void TargetOutline::Init() {
+void TargetOutline::Init() 
+{
     float vertices[] = {
         -0.5f,-0.5f,-0.5f, // 0
          0.5f,-0.5f,-0.5f, // 1
@@ -24,7 +23,8 @@ void TargetOutline::Init() {
     };
 
 
-    float colors[] = {
+    float colors[] = 
+    {
         1.f,1.f,1.f,
         1.f,1.f,1.f,
         1.f,1.f,1.f,
@@ -36,7 +36,8 @@ void TargetOutline::Init() {
     };
 
 
-    GLuint indices[] = {
+    GLuint indices[] = 
+    {
 
         0,1,
         1,2,
@@ -58,7 +59,8 @@ void TargetOutline::Init() {
 
 }
 
-void TargetOutline::SetTransform(float& posX, float& posY, float& posZ) {
+void TargetOutline::SetTransform(float& posX, float& posY, float& posZ) 
+{
 	m_posX = posX;
 	m_posY = posY;
 	m_posZ = posZ;

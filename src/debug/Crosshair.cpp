@@ -4,20 +4,20 @@
 #include "render/Shader.h"
 #include <glm/glm.hpp>
 
-Crosshair::Crosshair() {
-}
+Crosshair::Crosshair() {}
+Crosshair::~Crosshair() {}
 
-Crosshair::~Crosshair() {
-}
-
-void Crosshair::Init() {
-	float vertices[] = {
+void Crosshair::Init() 
+{
+	float vertices[] = 
+	{
 		-0.01f, 0.f, 0.f,
 		 0.01f, 0.f, 0.f,
 		 0.f, -0.01f, 0.f,
 		 0.f,  0.01f, 0.f
 	};
-	float colors[] = {
+	float colors[] = 
+	{
 		0.f, 1.f, 0.f,
 		0.f, 1.f, 0.f,
 		0.f, 1.f, 0.f,
@@ -27,7 +27,8 @@ void Crosshair::Init() {
 	m_mesh.Init(vertices, 12, colors, 12, indices, 4);
 }
 
-void Crosshair::Draw(const Camera& camera, Render& renderer, Shader& shader) {
+void Crosshair::Draw(const Camera& camera, Render& renderer, Shader& shader) 
+{
 	glm::vec3 camPos = camera.GetPosition();
 	glm::vec3 camFront = camera.GetFront();
 	glm::vec3 camRight = glm::normalize(glm::cross(camFront, glm::vec3(0.f, 1.f, 0.f)));

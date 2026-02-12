@@ -2,7 +2,8 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 
-Camera::Camera() {
+Camera::Camera() 
+{
 	m_position = glm::vec3(0.0f, 0.0f, 3.0f);
 	m_pitch = 0.0f;
 	m_yaw = -90.0f;
@@ -18,7 +19,8 @@ Camera::Camera() {
 	m_up = normalize(cross(m_right, m_front));
 }
 
-void Camera::Init() {
+void Camera::Init() 
+{
 
 
 	Camera::SetPosition(0.0f, 0.0f, 3.0f);
@@ -26,21 +28,25 @@ void Camera::Init() {
 	Camera::UpdateVectors();
 
 }
-Camera::~Camera() {
+Camera::~Camera() 
+{
 }
 
-void Camera::SetPosition(float x, float y, float z) {
+void Camera::SetPosition(float x, float y, float z) 
+{
 	m_position = glm::vec3(x, y, z);
 }
 
-void Camera::SetRotation(float pitch, float yaw) {
+void Camera::SetRotation(float pitch, float yaw) 
+{
 	m_pitch = pitch;
 	m_yaw = yaw;
 
 	Camera::UpdateVectors();
 }
 
-void Camera::UpdateVectors() {
+void Camera::UpdateVectors() 
+{
 
 	glm::vec3 front;
 	front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
@@ -52,30 +58,37 @@ void Camera::UpdateVectors() {
 	m_up = glm::normalize(glm::cross(m_right, m_front));
 }
 
-void Camera::SetFOV(float fovDegrees) {
+void Camera::SetFOV(float fovDegrees) 
+{
 	m_fov = fovDegrees;
 }
-void Camera::SetMovementSpeed(float speed) {
+void Camera::SetMovementSpeed(float speed) 
+{
 	m_movementSpeed = speed;
 }
 
-glm::mat4 Camera::GetViewMatrix() const {
+glm::mat4 Camera::GetViewMatrix() const 
+{
 	return glm::lookAt(m_position, m_position + m_front, m_up);
 }
 
-glm::mat4 Camera::GetProjectionMatrix() const {
+glm::mat4 Camera::GetProjectionMatrix() const 
+{
 	return glm::perspective(glm::radians(m_fov), m_aspect, m_near, m_far);
 }
 
-glm::vec3 Camera::GetPosition() const {
+glm::vec3 Camera::GetPosition() const 
+{
 	return m_position;
 }
 
-glm::vec3 Camera::GetFront() const {
+glm::vec3 Camera::GetFront() const 
+{
 	return m_front;
 }
 
-void Camera::Update(Input* input,float deltaTime) {
+void Camera::Update(Input* input,float deltaTime) 
+{
 
 	if (input->IsKeyPressed(GLFW_KEY_W))
 	{

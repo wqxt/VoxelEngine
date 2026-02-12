@@ -4,7 +4,8 @@
 Window::Window(int width, int height, const char* title) 
 : m_widgth(width), m_heigth(m_widgth){
 
-    if(glfwInit() == false){
+    if(glfwInit() == false)
+    {
 
         std::cerr << "Failed to init GLFW " << std::endl;
         return;
@@ -12,7 +13,8 @@ Window::Window(int width, int height, const char* title)
 
     m_window = glfwCreateWindow(width, height, title, NULL, NULL);
 
-    if(m_window == NULL){
+    if(m_window == NULL)
+    {
 
         std::cerr << "Falied to create window"<< std::endl;
         glfwTerminate();
@@ -22,39 +24,31 @@ Window::Window(int width, int height, const char* title)
     glfwMakeContextCurrent(m_window);
 }
 
-Window::~Window() {
-    if (m_window ) {
+Window::~Window() 
+{
+    if (m_window ) 
+    {
         glfwDestroyWindow(m_window);
     }
     glfwTerminate();
 }
 
-void Window::SwapBuffer(){
+void Window::SwapBuffer()
+{
 	glfwSwapBuffers(m_window);
 }
 
-bool Window::ShouldClose() const{
+bool Window::ShouldClose() const
+{
     return glfwWindowShouldClose(m_window);
 }
 
-void Window::PollEvents(){
+void Window::PollEvents()
+{
     glfwPollEvents();
 }
 
-void Window::Close(){
+void Window::Close()
+{
     glfwSetWindowShouldClose(m_window, 1);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

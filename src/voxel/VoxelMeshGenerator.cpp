@@ -14,11 +14,12 @@ static bool isSolid(const VoxelData& data, int x, int y, int z)
 
 static void colorForType(uint8_t type, float& r, float& g, float& b)
 {
-	switch (type) {
-		case VoxelType::Stone: r = 0.5f;  g = 0.5f;  b = 0.55f; break;
-		case VoxelType::Dirt:  r = 0.45f; g = 0.35f; b = 0.25f; break;
-		case VoxelType::Grass: r = 0.2f;  g = 0.6f;  b = 0.2f;  break;
-		default:               r = 0.5f;  g = 0.5f;  b = 0.5f;  break;
+	switch (type)
+	{
+	case VoxelType::Stone: r = 0.5f;  g = 0.5f;  b = 0.55f; break;
+	case VoxelType::Dirt:  r = 0.45f; g = 0.35f; b = 0.25f; break;
+	case VoxelType::Grass: r = 0.2f;  g = 0.6f;  b = 0.2f;  break;
+	default:               r = 0.5f;  g = 0.5f;  b = 0.5f;  break;
 	}
 }
 
@@ -33,9 +34,12 @@ static void addQuad(std::vector<float>& positions, std::vector<float>& colors,
 	positions.push_back(x1); positions.push_back(y1); positions.push_back(z1);
 	positions.push_back(x2); positions.push_back(y2); positions.push_back(z2);
 	positions.push_back(x3); positions.push_back(y3); positions.push_back(z3);
-	for (int i = 0; i < 4; ++i) {
+
+	for (int i = 0; i < 4; ++i)
+	{
 		colors.push_back(r); colors.push_back(g); colors.push_back(b);
 	}
+
 	indices.push_back(base + 0); indices.push_back(base + 1); indices.push_back(base + 2);
 	indices.push_back(base + 0); indices.push_back(base + 2); indices.push_back(base + 3);
 }
@@ -46,11 +50,18 @@ void VoxelMeshGenerator::GenerateMesh(const VoxelData& data, Mesh& outMesh)
 	std::vector<float> colors;
 	std::vector<GLuint> indices;
 
-	for (int z = 0; z < data.GetSizeZ(); ++z) {
-		for (int y = 0; y < data.GetSizeY(); ++y) {
-			for (int x = 0; x < data.GetSizeX(); ++x) {
+	for (int z = 0; z < data.GetSizeZ(); ++z)
+	{
+		for (int y = 0; y < data.GetSizeY(); ++y)
+		{
+			for (int x = 0; x < data.GetSizeX(); ++x)
+			{
 				uint8_t type = data.GetType(x, y, z);
-				if (type == VoxelType::Air) continue;
+
+				if (type == VoxelType::Air)
+				{
+					continue;
+				}
 
 				float cr, cg, cb;
 				colorForType(type, cr, cg, cb);

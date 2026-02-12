@@ -8,7 +8,8 @@ Render::Render(){}
 
 Render::~Render() {}
 
-void Render::Init() {
+void Render::Init() 
+{
 
 	gladLoadGL();
 
@@ -16,12 +17,14 @@ void Render::Init() {
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 }
 
-void Render::Clear() {
+void Render::Clear() 
+{
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Render::Draw(Shader& shader, Mesh& mesh, const glm::mat4& view,
-	const glm::mat4& projection, const glm::mat4& model) {
+	const glm::mat4& projection, const glm::mat4& model) 
+{
 
 	shader.Use();
 	shader.SetMat4("view", view);
@@ -31,7 +34,8 @@ void Render::Draw(Shader& shader, Mesh& mesh, const glm::mat4& view,
 }
 
 void Render::DrawLines(Shader& shader, Mesh& mesh, const glm::mat4& view,
-	const glm::mat4& projection, const glm::mat4& model) {
+	const glm::mat4& projection, const glm::mat4& model) 
+{
 	glDisable(GL_DEPTH_TEST);
 	shader.Use();
 	shader.SetMat4("view", view);

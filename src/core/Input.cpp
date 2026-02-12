@@ -10,35 +10,36 @@ bool Input::s_firstMouse = true;
 
 
 
-void Input::Init(GLFWwindow* window) {
+void Input::Init(GLFWwindow* window) 
+{
 	m_window = window;
 	glfwSetKeyCallback(window, Input::KeyCallback);
 	glfwSetCursorPosCallback(window, Input::MouseCallback);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
-Input::~Input() {
+Input::~Input() {}
 
-}
-
-
-bool Input::IsKeyPressed(int key) {
-
+bool Input::IsKeyPressed(int key) 
+{
 	return keys[key];
 }
 
-bool Input::IsMouseKeyPressed(int key) {
+bool Input::IsMouseKeyPressed(int key) 
+{
 	return glfwGetMouseButton(m_window, key) == GLFW_PRESS;
 }
 
-void Input::GetMouseDelta(float& xoffset, float& yoffset) {
+void Input::GetMouseDelta(float& xoffset, float& yoffset) 
+{
 	xoffset = s_deltaX;
 	yoffset = s_deltaY;
 	s_deltaX = 0.0f;
 	s_deltaY = 0.0f;
 }
 
-void Input::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+void Input::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) 
+{
 	(void)window;
 	(void)scancode;
 	(void)mods;
@@ -55,8 +56,8 @@ void Input::KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
 
 }
 
-void Input::MouseCallback(GLFWwindow* window, double xpos, double ypos) {
-
+void Input::MouseCallback(GLFWwindow* window, double xpos, double ypos) 
+{
 	(void)window;
 
 	if (s_firstMouse) {
