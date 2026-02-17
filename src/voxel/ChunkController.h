@@ -25,7 +25,7 @@ public:
 	std::function<bool(int, int, int)> GetIsSolidCallback() const;
 	bool IsSolid(int wx, int wy, int wz) const;
 	void SetVoxelType(int chunkBlockNumX, int chunkBlockNumY, int chunkBlockNumZ, uint8_t type, size_t linearChunkIndex);
-	void DestroyBlockAt(int worldX, int worldY, int worldZ);
+	void DestroyBlock(int worldX, int worldY, int worldZ);
 
 	int GetChunkSizeX() const { return m_chunkSizeX; }
 	int GetChunkSizeY() const { return m_chunkSizeY; }

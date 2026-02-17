@@ -67,7 +67,7 @@ int main() {
 		bool lmbNow = input.IsMouseKeyPressed(GLFW_MOUSE_BUTTON_LEFT);
 		if (lmbNow && !prevLmb && hit.hit)
 		{
-			chunkController.DestroyBlockAt(hit.blockPos.x, hit.blockPos.y, hit.blockPos.z);
+			chunkController.DestroyBlock(hit.blockPos.x, hit.blockPos.y, hit.blockPos.z);
 		}
 		prevLmb = lmbNow;
 

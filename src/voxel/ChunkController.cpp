@@ -25,9 +25,13 @@ void ChunkController::InitGrid(int gridX, int gridY, int gridZ)
 	m_gridY = gridY;
 	m_gridZ = gridZ;
 	m_chunks.reserve(static_cast<size_t>(gridX) * static_cast<size_t>(gridY) * static_cast<size_t>(gridZ));
-	for (int z = 0; z < gridZ; ++z) {
-		for (int y = 0; y < gridY; ++y) {
-			for (int x = 0; x < gridX; ++x) {
+
+	for (int z = 0; z < gridZ; ++z)
+	{
+		for (int y = 0; y < gridY; ++y)
+		{
+			for (int x = 0; x < gridX; ++x)
+			{
 				m_chunks.emplace_back(x, y, z);
 			}
 		}
@@ -45,14 +49,21 @@ size_t ChunkController::getIndex(int gridX, int gridY, int gridZ) const
 
 bool ChunkController::IsSolid(int wx, int wy, int wz) const
 {
-	if (wx < 0 || wx >= m_worldSizeX || wy < 0 || wy >= m_worldSizeY || wz < 0 || wz >= m_worldSizeZ)
+	if (wx < 0 || wx >= m_worldSizeX ||
+		wy < 0 || wy >= m_worldSizeY ||
+		wz < 0 || wz >= m_worldSizeZ)
+	{
+
 		return false;
+	}
 
 	int cx = wx / m_chunkSizeX;
 	int cy = wy / m_chunkSizeY;
 	int cz = wz / m_chunkSizeZ;
 
-	if (cx < 0 || cx >= m_gridX || cy < 0 || cy >= m_gridY || cz < 0 || cz >= m_gridZ)
+	if (cx < 0 || cx >= m_gridX || 
+		cy < 0 || cy >= m_gridY || 
+		cz < 0 || cz >= m_gridZ)
 	{
 		return false;
 	}
@@ -117,6 +128,7 @@ void ChunkController::SetupChunks(int chunkSizeX, int chunkSizeY, int chunkSizeZ
 						}
 					}
 				}
+
 				m_meshes.emplace_back();
 				int worldX = x * m_chunkSizeX;
 				int worldY = y * m_chunkSizeY;
@@ -135,6 +147,7 @@ void ChunkController::SetVoxelType(int chunkBlockNumX, int chunkBlockNumY, int c
 	{
 		return;
 	}
+
 	if (chunkBlockNumX < 0 || chunkBlockNumX >= m_chunkSizeX ||
 		chunkBlockNumY < 0 || chunkBlockNumY >= m_chunkSizeY ||
 		chunkBlockNumZ < 0 || chunkBlockNumZ >= m_chunkSizeZ)
@@ -144,13 +157,20 @@ void ChunkController::SetVoxelType(int chunkBlockNumX, int chunkBlockNumY, int c
 	m_voxelDatas[linearChunkIndex].SetType(chunkBlockNumX, chunkBlockNumY, chunkBlockNumZ, type);
 }
 
-void ChunkController::DestroyBlockAt(int worldX, int worldY, int worldZ)
+void ChunkController::DestroyBlock(int worldX, int worldY, int worldZ)
 {
-	if (worldX < 0 || worldX >= m_worldSizeX || worldY < 0 || worldY >= m_worldSizeY || worldZ < 0 || worldZ >= m_worldSizeZ)
+	if (worldX < 0 || worldX >= m_worldSizeX ||
+		worldY < 0 || worldY >= m_worldSizeY ||
+		worldZ < 0 || worldZ >= m_worldSizeZ)
+	{
+
 		return;
+	}
+
 	int cx = worldX / m_chunkSizeX;
 	int cy = worldY / m_chunkSizeY;
 	int cz = worldZ / m_chunkSizeZ;
+
 	int lx = worldX % m_chunkSizeX;
 	int ly = worldY % m_chunkSizeY;
 	int lz = worldZ % m_chunkSizeZ;
@@ -164,6 +184,12 @@ void ChunkController::DestroyBlockAt(int worldX, int worldY, int worldZ)
 	m_voxelDatas[idx].SetType(lx, ly, lz, VoxelType::Air);
 	SetChunkDirty(cx, cy, cz);
 	RebuildChunk(cx, cy, cz);
+	RebuildChunk(cx - 1, cy, cz);
+	RebuildChunk(cx + 1, cy, cz);
+	RebuildChunk(cx, cy - 1, cz);
+	RebuildChunk(cx, cy + 1, cz);
+	RebuildChunk(cx, cy, cz - 1);
+	RebuildChunk(cx, cy, cz + 1);
 }
 
 void ChunkController::LoadChunk(int gridX, int gridY, int gridZ, Mesh& mesh, VoxelData& voxelData)
