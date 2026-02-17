@@ -36,9 +36,9 @@ void ChunkController::InitGrid(int gridX, int gridY, int gridZ)
 
 size_t ChunkController::getIndex(int gridX, int gridY, int gridZ) const
 {
-	return static_cast<size_t>(gridX) 
-		+ static_cast<size_t>(gridY) * static_cast<size_t>(m_gridX) 
-		+ static_cast<size_t>(gridZ) * static_cast<size_t>(m_gridX) 
+	return static_cast<size_t>(gridX)
+		+ static_cast<size_t>(gridY) * static_cast<size_t>(m_gridX)
+		+ static_cast<size_t>(gridZ) * static_cast<size_t>(m_gridX)
 		* static_cast<size_t>(m_gridY);
 }
 
@@ -51,11 +51,25 @@ bool ChunkController::IsSolid(int wx, int wy, int wz) const
 	int cx = wx / m_chunkSizeX;
 	int cy = wy / m_chunkSizeY;
 	int cz = wz / m_chunkSizeZ;
+
+	if (cx < 0 || cx >= m_gridX || cy < 0 || cy >= m_gridY || cz < 0 || cz >= m_gridZ)
+	{
+		return false;
+	}
+
 	int lx = wx % m_chunkSizeX;
 	int ly = wy % m_chunkSizeY;
 	int lz = wz % m_chunkSizeZ;
+
 	size_t idx = static_cast<size_t>(cx) + static_cast<size_t>(cy) * static_cast<size_t>(m_gridX)
 		+ static_cast<size_t>(cz) * static_cast<size_t>(m_gridX) * static_cast<size_t>(m_gridY);
+
+
+	if (idx >= m_voxelDatas.size())
+	{
+		return false;
+	}
+
 	return m_voxelDatas[idx].GetType(lx, ly, lz) != VoxelType::Air;
 };
 
@@ -81,7 +95,7 @@ void ChunkController::SetupChunks(int chunkSizeX, int chunkSizeY, int chunkSizeZ
 			for (int x = 0; x < m_gridX; ++x)
 			{
 				m_voxelDatas.emplace_back(chunkSizeX, chunkSizeY, chunkSizeZ);
-				VoxelData& vd = m_voxelDatas.back();
+				VoxelData& voxelData = m_voxelDatas.back();
 				for (int cz = 0; cz < chunkSizeZ; ++cz)
 				{
 					for (int cy = 0; cy < chunkSizeY; ++cy)
@@ -90,26 +104,31 @@ void ChunkController::SetupChunks(int chunkSizeX, int chunkSizeY, int chunkSizeZ
 						{
 							if (cy == 0)
 							{
-								vd.SetType(cx, cy, cz, VoxelType::Stone);
+								voxelData.SetType(cx, cy, cz, VoxelType::Stone);
 							}
 							else if (cy == chunkSizeY - 1)
 							{
-								vd.SetType(cx, cy, cz, VoxelType::Grass);
+								voxelData.SetType(cx, cy, cz, VoxelType::Grass);
 							}
 							else
 							{
-								vd.SetType(cx, cy, cz, VoxelType::Dirt);
+								voxelData.SetType(cx, cy, cz, VoxelType::Dirt);
 							}
 						}
 					}
 				}
 				m_meshes.emplace_back();
-				VoxelMeshGenerator::GenerateMesh(vd, m_meshes.back());
+				int worldX = x * m_chunkSizeX;
+				int worldY = y * m_chunkSizeY;
+				int worldZ = z * m_chunkSizeZ;
+				auto callback = [this](int wx, int wy, int wz) { return this->IsSolid(wx, wy, wz); };
+				VoxelMeshGenerator::GenerateMesh(voxelData, m_meshes.back(), worldX, worldY, worldZ, callback);
 				LoadChunk(x, y, z, m_meshes.back(), m_voxelDatas.back());
 			}
 		}
 	}
 }
+
 void ChunkController::SetVoxelType(int chunkBlockNumX, int chunkBlockNumY, int chunkBlockNumZ, uint8_t type, size_t linearChunkIndex)
 {
 	if (linearChunkIndex >= m_voxelDatas.size())
@@ -175,7 +194,19 @@ void ChunkController::RebuildChunk(int gridX, int gridY, int gridZ)
 	}
 
 	size_t idx = getIndex(gridX, gridY, gridZ);
-	m_chunks[idx].RebuildDirty();
+
+	if (idx >= m_meshes.size() || idx >= m_chunks.size() || idx >= m_voxelDatas.size())
+	{
+		return;
+	}
+
+	int worldX = gridX * m_chunkSizeX;
+	int worldY = gridY * m_chunkSizeY;
+	int worldZ = gridZ * m_chunkSizeZ;
+	auto callback = [this](int wx, int wy, int wz) { return this->IsSolid(wx, wy, wz); };
+	VoxelMeshGenerator::GenerateMesh(m_voxelDatas[idx], m_meshes[idx], worldX, worldY, worldZ, callback);
+	m_chunks[idx].SetDirty();
+
 }
 
 void ChunkController::UnloadChunk(int gridX, int gridY, int gridZ)
@@ -221,10 +252,21 @@ std::function<bool(int, int, int)> ChunkController::GetIsSolidCallback() const
 {
 	return [this](int x, int y, int z) { return IsSolid(x, y, z); };
 }
+
 void ChunkController::RebuildAllDirtyChunks()
 {
-	for (Chunk& chunk : m_chunks) 
+	for (int z = 0; z < m_gridZ; ++z)
 	{
-		chunk.RebuildDirty();
+		for (int y = 0; y < m_gridY; ++y)
+		{
+			for (int x = 0; x < m_gridX; ++x)
+			{
+				size_t idx = getIndex(x, y, z);
+				if (idx < m_chunks.size() && m_chunks[idx].GetMesh() != nullptr)
+				{
+					RebuildChunk(x, y, z);
+				}
+			}
+		}
 	}
 }

@@ -1,11 +1,8 @@
 #include "Chunk.h"
 #include "VoxelMeshGenerator.h"
 
-Chunk::Chunk(int x, int y, int z):
-	m_position(x, y, z), m_VoxelData(nullptr), m_Mesh(nullptr), m_IsDirty()
-{
-
-}
+Chunk::Chunk(int x, int y, int z) :
+	m_position(x, y, z), m_VoxelData(nullptr), m_Mesh(nullptr), m_IsDirty(){}
 
 Chunk::~Chunk()
 {
@@ -14,7 +11,7 @@ Chunk::~Chunk()
 
 void Chunk::Load(Mesh& mesh, VoxelData& voxelData)
 {
-	m_Mesh = &mesh;	
+	m_Mesh = &mesh;
 	m_VoxelData = &voxelData;
 }
 
@@ -31,9 +28,5 @@ void Chunk::SetDirty()
 
 void Chunk::RebuildDirty()
 {
-	if (m_IsDirty && m_VoxelData && m_Mesh)
-	{
-		VoxelMeshGenerator::GenerateMesh(*m_VoxelData, *m_Mesh);
-		m_IsDirty = false;
-	}
+	m_IsDirty = false;
 }

@@ -3,16 +3,27 @@
 #include <glad/glad.h>
 #include <vector>
 #include <glm/glm.hpp>
+#include <functional>
 
-static bool isSolid(const VoxelData& data, int x, int y, int z)
+
+static bool isSolid(const VoxelData& data, int x, int y, int z,
+	int chunkWorldX, int chunkWorldY, int chunkWorldZ,
+	std::function<bool(int, int, int)> checkNeighborChunkFunc)
 {
-	if (x < 0 || x >= data.GetSizeX()) return false;
-	if (y < 0 || y >= data.GetSizeY()) return false;
-	if (z < 0 || z >= data.GetSizeZ()) return false;
-	return data.GetType(x, y, z) != VoxelType::Air;
+
+	if (x >= 0 && x < data.GetSizeX() &&
+		y >= 0 && y < data.GetSizeY() &&
+		z >= 0 && z < data.GetSizeZ()) {
+		return data.GetType(x, y, z) != VoxelType::Air;
+	}
+
+	int worldX = chunkWorldX + x;
+	int worldY = chunkWorldY + y;
+	int worldZ = chunkWorldZ + z;
+	return checkNeighborChunkFunc(worldX, worldY, worldZ);
 }
 
-static void colorForType(uint8_t type, float& r, float& g, float& b)
+static void setColorForType(uint8_t type, float& r, float& g, float& b)
 {
 	switch (type)
 	{
@@ -25,8 +36,10 @@ static void colorForType(uint8_t type, float& r, float& g, float& b)
 
 static void addQuad(std::vector<float>& positions, std::vector<float>& colors,
 	std::vector<GLuint>& indices,
-	float x0, float y0, float z0, float x1, float y1, float z1,
-	float x2, float y2, float z2, float x3, float y3, float z3,
+	float x0, float y0, float z0,
+	float x1, float y1, float z1,
+	float x2, float y2, float z2,
+	float x3, float y3, float z3,
 	float r, float g, float b)
 {
 	GLuint base = static_cast<GLuint>(positions.size() / 3);
@@ -44,7 +57,9 @@ static void addQuad(std::vector<float>& positions, std::vector<float>& colors,
 	indices.push_back(base + 0); indices.push_back(base + 2); indices.push_back(base + 3);
 }
 
-void VoxelMeshGenerator::GenerateMesh(const VoxelData& data, Mesh& outMesh)
+void VoxelMeshGenerator::GenerateMesh(const VoxelData& data, Mesh& outMesh,
+	int chunkWorldX, int chunkWorldY, int chunkWorldZ,
+	std::function<bool(int, int, int)> checkNeighborChunkFunc)
 {
 	std::vector<float> positions;
 	std::vector<float> colors;
@@ -64,7 +79,7 @@ void VoxelMeshGenerator::GenerateMesh(const VoxelData& data, Mesh& outMesh)
 				}
 
 				float cr, cg, cb;
-				colorForType(type, cr, cg, cb);
+				setColorForType(type, cr, cg, cb);
 
 				float fx = static_cast<float>(x);
 				float fy = static_cast<float>(y);
@@ -74,40 +89,52 @@ void VoxelMeshGenerator::GenerateMesh(const VoxelData& data, Mesh& outMesh)
 				const float bottomShade = 0.45f;
 				const float sideShade = 0.75f;
 
-				if (!isSolid(data, x + 1, y, z)) {
+				if (!isSolid(data, x + 1, y, z, chunkWorldX, chunkWorldY,chunkWorldZ, checkNeighborChunkFunc)) {
 					addQuad(positions, colors, indices,
-						fx + 1, fy, fz, fx + 1, fy + 1, fz,
-						fx + 1, fy + 1, fz + 1, fx + 1, fy, fz + 1,
+						fx + 1, fy, fz,
+						fx + 1, fy + 1, fz,
+						fx + 1, fy + 1, fz + 1,
+						fx + 1, fy, fz + 1,
 						cr * sideShade, cg * sideShade, cb * sideShade);
 				}
-				if (!isSolid(data, x - 1, y, z)) {
+				if (!isSolid(data, x - 1, y, z, chunkWorldX, chunkWorldY, chunkWorldZ, checkNeighborChunkFunc)) {
 					addQuad(positions, colors, indices,
-						fx, fy, fz + 1, fx, fy + 1, fz + 1,
-						fx, fy + 1, fz, fx, fy, fz,
+						fx, fy, fz + 1,
+						fx, fy + 1, fz + 1,
+						fx, fy + 1, fz,
+						fx, fy, fz,
 						cr * sideShade, cg * sideShade, cb * sideShade);
 				}
-				if (!isSolid(data, x, y + 1, z)) {
+				if (!isSolid(data, x, y + 1, z, chunkWorldX, chunkWorldY, chunkWorldZ, checkNeighborChunkFunc)) {
 					addQuad(positions, colors, indices,
-						fx, fy + 1, fz, fx + 1, fy + 1, fz,
-						fx + 1, fy + 1, fz + 1, fx, fy + 1, fz + 1,
+						fx, fy + 1, fz,
+						fx + 1, fy + 1, fz,
+						fx + 1, fy + 1, fz + 1,
+						fx, fy + 1, fz + 1,
 						cr * topShade, cg * topShade, cb * topShade);
 				}
-				if (!isSolid(data, x, y - 1, z)) {
+				if (!isSolid(data, x, y - 1, z, chunkWorldX, chunkWorldY, chunkWorldZ, checkNeighborChunkFunc)) {
 					addQuad(positions, colors, indices,
-						fx, fy, fz + 1, fx + 1, fy, fz + 1,
-						fx + 1, fy, fz, fx, fy, fz,
+						fx, fy, fz + 1,
+						fx + 1, fy, fz + 1,
+						fx + 1, fy, fz,
+						fx, fy, fz,
 						cr * bottomShade, cg * bottomShade, cb * bottomShade);
 				}
-				if (!isSolid(data, x, y, z + 1)) {
+				if (!isSolid(data, x, y, z + 1, chunkWorldX, chunkWorldY, chunkWorldZ, checkNeighborChunkFunc)) {
 					addQuad(positions, colors, indices,
-						fx + 1, fy, fz + 1, fx + 1, fy + 1, fz + 1,
-						fx, fy + 1, fz + 1, fx, fy, fz + 1,
+						fx + 1, fy, fz + 1,
+						fx + 1, fy + 1, fz + 1,
+						fx, fy + 1, fz + 1,
+						fx, fy, fz + 1,
 						cr * sideShade, cg * sideShade, cb * sideShade);
 				}
-				if (!isSolid(data, x, y, z - 1)) {
+				if (!isSolid(data, x, y, z - 1, chunkWorldX, chunkWorldY, chunkWorldZ, checkNeighborChunkFunc)) {
 					addQuad(positions, colors, indices,
-						fx, fy, fz, fx + 1, fy, fz,
-						fx + 1, fy + 1, fz, fx, fy + 1, fz,
+						fx, fy, fz,
+						fx + 1, fy, fz,
+						fx + 1, fy + 1, fz,
+						fx, fy + 1, fz,
 						cr * sideShade, cg * sideShade, cb * sideShade);
 				}
 			}
