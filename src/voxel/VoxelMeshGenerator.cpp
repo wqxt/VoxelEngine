@@ -54,10 +54,11 @@ static void addQuad(std::vector<float>& positions, std::vector<float>& colors, s
 	}
 
 
-	uvs.push_back(0.f); uvs.push_back(0.f);
+	uvs.push_back(0.f); uvs.push_back(1.f);
 	uvs.push_back(1.f); uvs.push_back(0.f);
 	uvs.push_back(1.f); uvs.push_back(1.f);
 	uvs.push_back(0.f); uvs.push_back(1.f);
+
 
 	indices.push_back(base + 0); indices.push_back(base + 1); indices.push_back(base + 2);
 	indices.push_back(base + 0); indices.push_back(base + 2); indices.push_back(base + 3);
