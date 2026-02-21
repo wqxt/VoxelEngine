@@ -23,8 +23,17 @@ void Crosshair::Init()
 		0.f, 1.f, 0.f,
 		0.f, 1.f, 0.f
 	};
+
+	float uvs[] = 
+	{
+		0.f, 0.f,
+		1.f, 0.f,
+		1.f, 1.f,
+		0.f, 1.f
+	};
+
 	GLuint indices[] = { 0, 1, 2, 3 };
-	m_mesh.Init(vertices, 12, colors, 12, indices, 4);
+	m_mesh.Init(vertices, 12, colors, 12,uvs,4, indices, 4);
 }
 
 void Crosshair::Draw(const Camera& camera, Render& renderer, Shader& shader) 

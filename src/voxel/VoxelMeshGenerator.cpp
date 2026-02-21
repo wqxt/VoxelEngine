@@ -34,7 +34,7 @@ static void setColorForType(uint8_t type, float& r, float& g, float& b)
 	}
 }
 
-static void addQuad(std::vector<float>& positions, std::vector<float>& colors,
+static void addQuad(std::vector<float>& positions, std::vector<float>& colors, std::vector<float>& uvs,
 	std::vector<GLuint>& indices,
 	float x0, float y0, float z0,
 	float x1, float y1, float z1,
@@ -53,6 +53,12 @@ static void addQuad(std::vector<float>& positions, std::vector<float>& colors,
 		colors.push_back(r); colors.push_back(g); colors.push_back(b);
 	}
 
+
+	uvs.push_back(0.f); uvs.push_back(0.f);
+	uvs.push_back(1.f); uvs.push_back(0.f);
+	uvs.push_back(1.f); uvs.push_back(1.f);
+	uvs.push_back(0.f); uvs.push_back(1.f);
+
 	indices.push_back(base + 0); indices.push_back(base + 1); indices.push_back(base + 2);
 	indices.push_back(base + 0); indices.push_back(base + 2); indices.push_back(base + 3);
 }
@@ -63,6 +69,7 @@ void VoxelMeshGenerator::GenerateMesh(const VoxelData& data, Mesh& outMesh,
 {
 	std::vector<float> positions;
 	std::vector<float> colors;
+	std::vector<float> uvs;
 	std::vector<GLuint> indices;
 
 	for (int z = 0; z < data.GetSizeZ(); ++z)
@@ -90,7 +97,7 @@ void VoxelMeshGenerator::GenerateMesh(const VoxelData& data, Mesh& outMesh,
 				const float sideShade = 0.75f;
 
 				if (!isSolid(data, x + 1, y, z, chunkWorldX, chunkWorldY,chunkWorldZ, checkNeighborChunkFunc)) {
-					addQuad(positions, colors, indices,
+					addQuad(positions, colors, uvs, indices,
 						fx + 1, fy, fz,
 						fx + 1, fy + 1, fz,
 						fx + 1, fy + 1, fz + 1,
@@ -98,7 +105,7 @@ void VoxelMeshGenerator::GenerateMesh(const VoxelData& data, Mesh& outMesh,
 						cr * sideShade, cg * sideShade, cb * sideShade);
 				}
 				if (!isSolid(data, x - 1, y, z, chunkWorldX, chunkWorldY, chunkWorldZ, checkNeighborChunkFunc)) {
-					addQuad(positions, colors, indices,
+					addQuad(positions, colors, uvs, indices,
 						fx, fy, fz + 1,
 						fx, fy + 1, fz + 1,
 						fx, fy + 1, fz,
@@ -106,7 +113,7 @@ void VoxelMeshGenerator::GenerateMesh(const VoxelData& data, Mesh& outMesh,
 						cr * sideShade, cg * sideShade, cb * sideShade);
 				}
 				if (!isSolid(data, x, y + 1, z, chunkWorldX, chunkWorldY, chunkWorldZ, checkNeighborChunkFunc)) {
-					addQuad(positions, colors, indices,
+					addQuad(positions, colors, uvs,indices,
 						fx, fy + 1, fz,
 						fx + 1, fy + 1, fz,
 						fx + 1, fy + 1, fz + 1,
@@ -114,7 +121,7 @@ void VoxelMeshGenerator::GenerateMesh(const VoxelData& data, Mesh& outMesh,
 						cr * topShade, cg * topShade, cb * topShade);
 				}
 				if (!isSolid(data, x, y - 1, z, chunkWorldX, chunkWorldY, chunkWorldZ, checkNeighborChunkFunc)) {
-					addQuad(positions, colors, indices,
+					addQuad(positions, colors, uvs,indices,
 						fx, fy, fz + 1,
 						fx + 1, fy, fz + 1,
 						fx + 1, fy, fz,
@@ -122,7 +129,7 @@ void VoxelMeshGenerator::GenerateMesh(const VoxelData& data, Mesh& outMesh,
 						cr * bottomShade, cg * bottomShade, cb * bottomShade);
 				}
 				if (!isSolid(data, x, y, z + 1, chunkWorldX, chunkWorldY, chunkWorldZ, checkNeighborChunkFunc)) {
-					addQuad(positions, colors, indices,
+					addQuad(positions, colors, uvs,indices,
 						fx + 1, fy, fz + 1,
 						fx + 1, fy + 1, fz + 1,
 						fx, fy + 1, fz + 1,
@@ -130,7 +137,7 @@ void VoxelMeshGenerator::GenerateMesh(const VoxelData& data, Mesh& outMesh,
 						cr * sideShade, cg * sideShade, cb * sideShade);
 				}
 				if (!isSolid(data, x, y, z - 1, chunkWorldX, chunkWorldY, chunkWorldZ, checkNeighborChunkFunc)) {
-					addQuad(positions, colors, indices,
+					addQuad(positions, colors, uvs,indices,
 						fx, fy, fz,
 						fx + 1, fy, fz,
 						fx + 1, fy + 1, fz,
@@ -143,5 +150,6 @@ void VoxelMeshGenerator::GenerateMesh(const VoxelData& data, Mesh& outMesh,
 
 	outMesh.Init(positions.data(), positions.size(),
 		colors.data(), colors.size(),
+		uvs.data(), uvs.size(),
 		indices.data(), indices.size());
 }

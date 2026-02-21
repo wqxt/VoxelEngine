@@ -7,12 +7,20 @@
 #include <render/Render.h>
 #include <render/Mesh.h>
 #include <render/Shader.h>
-#include <chrono>
-#include <vector>
 #include <voxel/Chunk.h>
 #include <voxel/ChunkController.h>
 #include <debug/Crosshair.h>
 #include <debug/TargetOutline.h>
+#include "map/MapLoader.h"
+#include <vector>
+#include <chrono>
+
+
+#define FLAT_SHADE_UNIFORM_NAME "u_flatShade"
+#define VERTEX_SHADER_PATH "../../assets/shaders/default.vert"
+#define FRAGMENT_SHADER_PATH "../../assets/shaders/default.frag"
+#define MAP_PATH "../../assets/maps/testmap.map"
+
 
 int main() {
 
@@ -23,7 +31,7 @@ int main() {
 	renderer.Init();
 
 	Shader shader;
-	shader.LoadFromFiles("../../assets/shaders/default.vert", "../../assets/shaders/default.frag");
+	shader.LoadFromFiles(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
 
 	const int chunkSizeX = 5;
 	const int chunkSizeY = 10;
@@ -31,6 +39,11 @@ int main() {
 	const int gridX = 10;
 	const int gridY = 10;
 	const int gridZ = 10;
+
+	MapLoader mapLoader;
+	mapLoader.LoadMap(MAP_PATH);
+
+
 
 	ChunkController chunkController;
 	chunkController.InitGrid(gridX, gridY, gridZ);
@@ -73,7 +86,7 @@ int main() {
 
 		renderer.Clear();
 
-		for (const Chunk& chunk : chunkController.GetChunks()) 
+		for (const Chunk& chunk : chunkController.GetChunks())
 		{
 			Mesh* mesh = chunk.GetMesh();
 			if (!mesh)
@@ -83,6 +96,7 @@ int main() {
 				static_cast<float>(pos.x * chunkController.GetChunkSizeX()),
 				static_cast<float>(pos.y * chunkController.GetChunkSizeY()),
 				static_cast<float>(pos.z * chunkController.GetChunkSizeZ())));
+			shader.SetShaderShade(FLAT_SHADE_UNIFORM_NAME, 0.f);
 			renderer.Draw(shader, *mesh, camera.GetViewMatrix(), camera.GetProjectionMatrix(), model);
 		}
 
@@ -91,8 +105,12 @@ int main() {
 			float oy = static_cast<float>(hit.blockPos.y) + 0.5f;
 			float oz = static_cast<float>(hit.blockPos.z) + 0.5f;
 			targetOutline.SetTransform(ox, oy, oz);
+
+			shader.SetShaderShade(FLAT_SHADE_UNIFORM_NAME, 1.f);
 			targetOutline.Draw(camera, renderer, shader);
 		}
+
+		shader.SetShaderShade(FLAT_SHADE_UNIFORM_NAME, 1.f);
 		crosshair.Draw(camera, renderer, shader);
 		window.SwapBuffer();
 	}

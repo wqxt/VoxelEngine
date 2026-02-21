@@ -5,17 +5,24 @@
 #include <iostream>
 #include <glm/gtc/type_ptr.hpp>
 
-Shader::Shader() : m_programID(0) {
+Shader::Shader() : m_programID(0) {}
 
-}
-
-Shader :: ~Shader() {
+Shader :: ~Shader() 
+{
 	if (m_programID != 0) {
 		glDeleteProgram(m_programID);
 	}
 }
 
-void Shader::Load(const char* vertexSource, const char* fragmentSource){
+
+void Shader::SetShaderShade(const char* name, float value)
+{
+	GLint loc = glGetUniformLocation(m_programID, name);
+	glUniform1f(loc, value);
+}
+
+void Shader::Load(const char* vertexSource, const char* fragmentSource)
+{
 
 	GLuint vertexShader = CompileShader(vertexSource, GL_VERTEX_SHADER);
 	GLuint fragmentShader = CompileShader(fragmentSource, GL_FRAGMENT_SHADER);
@@ -58,7 +65,8 @@ void Shader::Load(const char* vertexSource, const char* fragmentSource){
 
 }
 
-void Shader::LoadFromFiles(const char* vertexPath, const char* fragmentPath) {
+void Shader::LoadFromFiles(const char* vertexPath, const char* fragmentPath)
+{
 	std::ifstream vFile(vertexPath);
 	if (!vFile) {
 		std::cerr << "ERROR::SHADER::FILE_NOT_OPEN " << vertexPath << std::endl;
@@ -83,7 +91,8 @@ void Shader::LoadFromFiles(const char* vertexPath, const char* fragmentPath) {
 }
 
 
-void Shader::Use() {
+void Shader::Use() 
+{
 	if( m_programID == 0) {
 		std::cerr << "ERROR::SHADER::PROGRAM_NOT_LOADED" << std::endl;
 		return;
@@ -91,12 +100,16 @@ void Shader::Use() {
 	glUseProgram(m_programID);
 }
 
-void Shader::SetMat4(const char* name, const glm::mat4& mat) {
+void Shader::SetMat4(const char* name, const glm::mat4& mat) 
+{
 	GLint location = glGetUniformLocation(m_programID, name);
 	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
 }
 
-GLuint Shader::CompileShader(const char* source, GLenum shaderType) {
+
+
+GLuint Shader::CompileShader(const char* source, GLenum shaderType) 
+{
 
 	GLuint shader = glCreateShader(shaderType);
 	glShaderSource(shader, 1, &source, nullptr);

@@ -55,7 +55,18 @@ void TargetOutline::Init()
         3,7
     };
 
-    m_mesh.Init(vertices, 24, colors, 24, indices, 24);
+    float uvs[] = 
+    {
+        0.f, 0.f,
+        1.f, 0.f,
+        1.f, 1.f,
+        0.f, 1.f,
+        0.f, 0.f,
+        1.f, 0.f,
+        1.f, 1.f,
+        0.f, 1.f
+	};
+    m_mesh.Init(vertices, 24, colors, 24,uvs,16, indices, 24);
 
 }
 
