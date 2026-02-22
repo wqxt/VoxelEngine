@@ -42,6 +42,7 @@ static void addQuad(std::vector<float>& positions, std::vector<float>& colors, s
 	float x3, float y3, float z3,
 	float r, float g, float b)
 {
+
 	GLuint base = static_cast<GLuint>(positions.size() / 3);
 	positions.push_back(x0); positions.push_back(y0); positions.push_back(z0);
 	positions.push_back(x1); positions.push_back(y1); positions.push_back(z1);

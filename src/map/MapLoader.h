@@ -5,11 +5,8 @@
 
 class MapLoader {
 public:
-	MapLoader();
-	~MapLoader();
-	void LoadMap(const std::string& filename);
+	MapLoader() = default;
+	~MapLoader() = default;
 
-private:
-
-	
+	void LoadMap(const std::string& filename, MapData& outMap);
 };

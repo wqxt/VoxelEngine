@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <glm/glm.hpp>
 #include <functional>
+#include <map/MapData.h>
 
 class ChunkController {
 
@@ -13,7 +14,7 @@ public:
 	~ChunkController();
 
 	void InitGrid(int gridX, int gridY, int gridZ);
-	void SetupChunks(int chunkSizeX, int chunkSizeY, int chunkSizeZ);
+	void SetupChunks(int chunkSizeX, int chunkSizeY, int chunkSizeZ, MapData& outMapData);
 	void LoadChunk(int gridX, int gridY, int gridZ, Mesh& mesh, VoxelData& voxelData);
 	void SetChunkDirty(int gridX, int gridY, int gridZ);
 	void RebuildChunk(int gridX, int gridY, int gridZ);

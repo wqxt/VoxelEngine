@@ -84,7 +84,7 @@ bool ChunkController::IsSolid(int wx, int wy, int wz) const
 	return m_voxelDatas[idx].GetType(lx, ly, lz) != VoxelType::Air;
 };
 
-void ChunkController::SetupChunks(int chunkSizeX, int chunkSizeY, int chunkSizeZ)
+void ChunkController::SetupChunks(int chunkSizeX, int chunkSizeY, int chunkSizeZ, MapData& outMapData)
 {
 	m_chunkSizeX = chunkSizeX;
 	m_chunkSizeY = chunkSizeY;
@@ -94,6 +94,8 @@ void ChunkController::SetupChunks(int chunkSizeX, int chunkSizeY, int chunkSizeZ
 	m_worldSizeX = m_gridX * m_chunkSizeX;
 	m_worldSizeY = m_gridY * m_chunkSizeY;
 	m_worldSizeZ = m_gridZ * m_chunkSizeZ;
+
+	
 
 	m_numChunks = static_cast<size_t>(m_gridX) * static_cast<size_t>(m_gridY) * static_cast<size_t>(m_gridZ);
 	m_voxelDatas.reserve(m_numChunks);
@@ -107,32 +109,35 @@ void ChunkController::SetupChunks(int chunkSizeX, int chunkSizeY, int chunkSizeZ
 			{
 				m_voxelDatas.emplace_back(chunkSizeX, chunkSizeY, chunkSizeZ);
 				VoxelData& voxelData = m_voxelDatas.back();
+				int worldX = x * m_chunkSizeX;
+				int worldY = y * m_chunkSizeY;
+				int worldZ = z * m_chunkSizeZ;
 				for (int cz = 0; cz < chunkSizeZ; ++cz)
 				{
 					for (int cy = 0; cy < chunkSizeY; ++cy)
 					{
 						for (int cx = 0; cx < chunkSizeX; ++cx)
 						{
-							if (cy == 0)
+							int wx = worldX + cx;
+							int wy = worldY + cy;
+							int wz = worldZ + cz;
+							int mapX = wx / m_chunkSizeX;
+							int mapZ = wz / m_chunkSizeZ;
+							uint8_t type;
+							if (wy ==0)
 							{
-								voxelData.SetType(cx, cy, cz, VoxelType::Stone);
-							}
-							else if (cy == chunkSizeY - 1)
-							{
-								voxelData.SetType(cx, cy, cz, VoxelType::Grass);
+								type = outMapData.GetCell(mapX, mapZ);
 							}
 							else
 							{
-								voxelData.SetType(cx, cy, cz, VoxelType::Dirt);
+								type = VoxelType::Air;
 							}
+							voxelData.SetType(cx, cy, cz, type);
 						}
 					}
 				}
 
 				m_meshes.emplace_back();
-				int worldX = x * m_chunkSizeX;
-				int worldY = y * m_chunkSizeY;
-				int worldZ = z * m_chunkSizeZ;
 				auto callback = [this](int wx, int wy, int wz) { return this->IsSolid(wx, wy, wz); };
 				VoxelMeshGenerator::GenerateMesh(voxelData, m_meshes.back(), worldX, worldY, worldZ, callback);
 				LoadChunk(x, y, z, m_meshes.back(), m_voxelDatas.back());

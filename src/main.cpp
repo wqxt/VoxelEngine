@@ -19,7 +19,7 @@
 #define FLAT_SHADE_UNIFORM_NAME "u_flatShade"
 #define VERTEX_SHADER_PATH "../../assets/shaders/default.vert"
 #define FRAGMENT_SHADER_PATH "../../assets/shaders/default.frag"
-#define MAP_PATH "../../assets/maps/testmap.map"
+#define MAP_PATH "../../assets/map/testLevel.map"
 
 
 int main() {
@@ -36,18 +36,24 @@ int main() {
 	const int chunkSizeX = 5;
 	const int chunkSizeY = 10;
 	const int chunkSizeZ = 5;
-	const int gridX = 10;
+
 	const int gridY = 10;
-	const int gridZ = 10;
 
+
+	MapData mapData;
 	MapLoader mapLoader;
-	mapLoader.LoadMap(MAP_PATH);
+	mapLoader.LoadMap(MAP_PATH, mapData);
 
+	int mapSizeX, mapSizeZ;
+	mapData.GetSizeX(mapSizeX);
+	mapData.GetSizeZ(mapSizeZ);
 
 
 	ChunkController chunkController;
-	chunkController.InitGrid(gridX, gridY, gridZ);
-	chunkController.SetupChunks(chunkSizeX, chunkSizeY, chunkSizeZ);
+	chunkController.InitGrid(mapSizeX, gridY, mapSizeZ);
+	chunkController.SetupChunks(chunkSizeX, chunkSizeY, chunkSizeZ,mapData);
+
+
 
 	Input input;
 	input.Init(glfwWindow);
@@ -89,8 +95,12 @@ int main() {
 		for (const Chunk& chunk : chunkController.GetChunks())
 		{
 			Mesh* mesh = chunk.GetMesh();
-			if (!mesh)
+
+			if (mesh == NULL)
+			{
 				continue;
+			}
+
 			const glm::ivec3& pos = chunk.GetPosition();
 			glm::mat4 model = glm::translate(glm::mat4(1.f), glm::vec3(
 				static_cast<float>(pos.x * chunkController.GetChunkSizeX()),
