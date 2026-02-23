@@ -124,6 +124,7 @@ void ChunkController::SetupChunks(int chunkSizeX, int chunkSizeY, int chunkSizeZ
 							int mapX = wx / m_chunkSizeX;
 							int mapZ = wz / m_chunkSizeZ;
 							uint8_t type;
+
 							if (wy ==0)
 							{
 								type = outMapData.GetCell(mapX, mapZ);

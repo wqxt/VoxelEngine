@@ -33,9 +33,9 @@ int main() {
 	Shader shader;
 	shader.LoadFromFiles(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
 
-	const int chunkSizeX = 5;
-	const int chunkSizeY = 10;
-	const int chunkSizeZ = 5;
+	const int chunkSizeX = 1;
+	const int chunkSizeY = 1;
+	const int chunkSizeZ = 1;
 
 	const int gridY = 10;
 
@@ -110,7 +110,8 @@ int main() {
 			renderer.Draw(shader, *mesh, camera.GetViewMatrix(), camera.GetProjectionMatrix(), model);
 		}
 
-		if (hit.hit) {
+		if (hit.hit) 
+		{
 			float ox = static_cast<float>(hit.blockPos.x) + 0.5f;
 			float oy = static_cast<float>(hit.blockPos.y) + 0.5f;
 			float oz = static_cast<float>(hit.blockPos.z) + 0.5f;

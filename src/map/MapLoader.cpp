@@ -15,8 +15,6 @@ void MapLoader::LoadMap(const std::string& filename, MapData& outMap) {
 		std::cout << "File reading is succes" << std::endl;
 	}
 
-
-
 	std::string mapLine;
 	int sizeZ = 0;
 	int sizeX = 0;
@@ -47,7 +45,7 @@ void MapLoader::LoadMap(const std::string& filename, MapData& outMap) {
 		for (int z = 0; z < mapLines[x].size(); ++z)
 		{
 			char c = mapLines[x][z];
-
+		
 			if (c == '#')
 			{
 				outMap.SetCell(static_cast<int>(z), static_cast<int>(x), 1);
