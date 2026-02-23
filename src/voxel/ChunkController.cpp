@@ -122,17 +122,9 @@ void ChunkController::SetupChunks(int chunkSizeX, int chunkSizeY, int chunkSizeZ
 							int wy = worldY + cy;
 							int wz = worldZ + cz;
 							int mapX = wx / m_chunkSizeX;
+							int mapY = wy / m_chunkSizeY;
 							int mapZ = wz / m_chunkSizeZ;
-							uint8_t type;
-
-							if (wy ==0)
-							{
-								type = outMapData.GetCell(mapX, mapZ);
-							}
-							else
-							{
-								type = VoxelType::Air;
-							}
+							uint8_t type = outMapData.GetCell(mapX, mapY, mapZ);
 							voxelData.SetType(cx, cy, cz, type);
 						}
 					}

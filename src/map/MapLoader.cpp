@@ -1,63 +1,65 @@
 #include "MapLoader.h"
-#include<fstream>
+#include <fstream>
 
-
-void MapLoader::LoadMap(const std::string& filename, MapData& outMap) {
-
+void MapLoader::LoadMap(const std::string& filename, MapData& outMap)
+{
 	std::ifstream map(filename);
 
 	if (map.is_open() == false)
 	{
 		std::cerr << "Error: could not open file" << std::endl;
-	}
-	else
-	{
-		std::cout << "File reading is succes" << std::endl;
+		return;
 	}
 
-	std::string mapLine;
-	int sizeZ = 0;
-	int sizeX = 0;
+	std::cout << "File reading is succes" << std::endl;
 
-	std::vector<std::string> mapLines;
+	std::string line;
+	std::vector<std::string> allLines;
 
-	while (std::getline(map, mapLine))
+	while (std::getline(map, line))
 	{
-		if (mapLine.empty())
+		if (line.empty())
+			continue;
+		if (line[0] == '/')
+			break;
+		allLines.push_back(line);
+	}
+
+	std::vector<std::vector<std::string>> layers;
+	layers.push_back({});
+
+	for (const std::string& l : allLines)
+	{
+		if (l.size() >= 3 && l[0] == '-' && l[1] == '-' && l[2] == '-')
 		{
+			layers.push_back({});
 			continue;
 		}
-
-		if (mapLine[0] == '/')
-		{
-			break;
-		}
-
-		mapLines.push_back(mapLine);
+		layers.back().push_back(l);
 	}
 
-	sizeX = static_cast<int>(mapLines[0].size());
-	sizeZ = static_cast<int>(mapLines.size());
-	outMap.Resize(sizeX, sizeZ);
+	while (layers.size() > 1 && layers.back().empty())
+		layers.pop_back();
 
-	for (int x = 0; x < mapLines.size(); ++x)
+	if (layers.empty() || layers[0].empty())
+		return;
+
+	int sizeX = static_cast<int>(layers[0][0].size());
+	int sizeZ = static_cast<int>(layers[0].size());
+	int sizeY = static_cast<int>(layers.size());
+	outMap.Resize(sizeX, sizeY, sizeZ);
+
+	for (int y = 0; y < sizeY; ++y)
 	{
-		for (int z = 0; z < mapLines[x].size(); ++z)
+		const std::vector<std::string>& block = layers[y];
+		for (int z = 0; z < sizeZ && z < static_cast<int>(block.size()); ++z)
 		{
-			char c = mapLines[x][z];
-		
-			if (c == '#')
+			const std::string& row = block[z];
+			for (int x = 0; x < sizeX && x < static_cast<int>(row.size()); ++x)
 			{
-				outMap.SetCell(static_cast<int>(z), static_cast<int>(x), 1);
-			}
-			else if (c == '.')
-			{
-				outMap.SetCell(static_cast<int>(z), static_cast<int>(x), 3);
-			}
-			else
-			{
-				outMap.SetCell(static_cast<int>(z), static_cast<int>(x), 0);
-
+				char c = row[x];
+				uint8_t value = (c == '#') ? 1 : (c == '.') ? 2 : 0;
+				outMap.SetCell(x, y, z, value);
 			}
 		}
 	}

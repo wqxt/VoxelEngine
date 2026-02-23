@@ -19,7 +19,7 @@
 #define FLAT_SHADE_UNIFORM_NAME "u_flatShade"
 #define VERTEX_SHADER_PATH "../../assets/shaders/default.vert"
 #define FRAGMENT_SHADER_PATH "../../assets/shaders/default.frag"
-#define MAP_PATH "../../assets/map/testLevel.map"
+#define MAP_PATH "../../assets/map/testLevel3D.map"
 
 
 int main() {
@@ -33,24 +33,21 @@ int main() {
 	Shader shader;
 	shader.LoadFromFiles(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
 
-	const int chunkSizeX = 1;
-	const int chunkSizeY = 1;
-	const int chunkSizeZ = 1;
-
-	const int gridY = 10;
-
+	const int chunkSizeX = 2;
+	const int chunkSizeY = 2;
+	const int chunkSizeZ = 2;
 
 	MapData mapData;
 	MapLoader mapLoader;
 	mapLoader.LoadMap(MAP_PATH, mapData);
 
-	int mapSizeX, mapSizeZ;
+	int mapSizeX, mapSizeY, mapSizeZ;
 	mapData.GetSizeX(mapSizeX);
+	mapData.GetSizeY(mapSizeY);
 	mapData.GetSizeZ(mapSizeZ);
 
-
 	ChunkController chunkController;
-	chunkController.InitGrid(mapSizeX, gridY, mapSizeZ);
+	chunkController.InitGrid(mapSizeX, mapSizeY, mapSizeZ);
 	chunkController.SetupChunks(chunkSizeX, chunkSizeY, chunkSizeZ,mapData);
 
 
