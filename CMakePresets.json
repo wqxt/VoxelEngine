@@ -2,28 +2,30 @@
     "version": 6,
     "configurePresets": [
         {
-            "name": "default",
+            "name": "vs2026-x64",
             "displayName": "Visual Studio 2026 (x64)",
-            "description": "Конфигурация для Visual Studio 2026",
+            "description": "Base configuration for generating the Visual Studio solution (.sln)",
             "generator": "Visual Studio 18 2026",
             "architecture": {
                 "value": "x64"
             },
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug"
-            }
+            "binaryDir": "${sourceDir}/build" 
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "debug",
+            "configurePreset": "vs2026-x64",
+            "configuration": "Debug",
+            "displayName": "Build in Debug mode",
+            "description": "Compiles the engine with debug symbols and no optimizations"
         },
         {
             "name": "release",
-            "displayName": "Visual Studio 2026 (x64, Release)",
-            "description": "Release сборка",
-            "generator": "Visual Studio 18 2026",
-            "architecture": {
-                "value": "x64"
-            },
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
-            }
+            "configurePreset": "vs2026-x64",
+            "configuration": "Release",
+            "displayName": "Build in Release mode",
+            "description": "Compiles the engine with full optimizations for maximum performance"
         }
     ]
 }
