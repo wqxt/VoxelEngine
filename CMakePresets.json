@@ -1,0 +1,29 @@
+{
+    "version": 6,
+    "configurePresets": [
+        {
+            "name": "default",
+            "displayName": "Visual Studio 2026 (x64)",
+            "description": "Конфигурация для Visual Studio 2026",
+            "generator": "Visual Studio 18 2026",
+            "architecture": {
+                "value": "x64"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "release",
+            "displayName": "Visual Studio 2026 (x64, Release)",
+            "description": "Release сборка",
+            "generator": "Visual Studio 18 2026",
+            "architecture": {
+                "value": "x64"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        }
+    ]
+}

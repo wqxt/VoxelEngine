@@ -52,9 +52,6 @@ void Mesh::Init(const float* positions, size_t posCount, const float* colors, si
 	m_indexCount = static_cast<GLuint>(indexCount);
 	glBindVertexArray(0);
 
-
-
-
 }
 
 void Mesh::DrawLines()
