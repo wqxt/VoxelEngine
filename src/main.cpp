@@ -86,7 +86,8 @@ int main() {
 			chunkController.DestroyBlock(hit.blockPos.x, hit.blockPos.y, hit.blockPos.z);
 		}
 		prevLmb = lmbNow;
-
+ 		chunkController.RebuildAllDirtyChunks();
+		
 		renderer.Clear();
 
 		for (const Chunk& chunk : chunkController.GetChunks())

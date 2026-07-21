@@ -180,14 +180,17 @@ void ChunkController::DestroyBlock(int worldX, int worldY, int worldZ)
 		return;
 	}
 	m_voxelDatas[idx].SetType(lx, ly, lz, VoxelType::Air);
+	
 	SetChunkDirty(cx, cy, cz);
-	RebuildChunk(cx, cy, cz);
-	RebuildChunk(cx - 1, cy, cz);
-	RebuildChunk(cx + 1, cy, cz);
-	RebuildChunk(cx, cy - 1, cz);
-	RebuildChunk(cx, cy + 1, cz);
-	RebuildChunk(cx, cy, cz - 1);
-	RebuildChunk(cx, cy, cz + 1);
+	SetChunkDirty(cx - 1, cy, cz);
+	SetChunkDirty(cx + 1, cy, cz);
+	SetChunkDirty(cx, cy - 1, cz);
+	SetChunkDirty(cx, cy + 1, cz);
+	SetChunkDirty(cx, cy, cz - 1);
+	SetChunkDirty(cx, cy, cz + 1);
+
+
+
 }
 
 void ChunkController::LoadChunk(int gridX, int gridY, int gridZ, Mesh& mesh, VoxelData& voxelData)
@@ -229,7 +232,6 @@ void ChunkController::RebuildChunk(int gridX, int gridY, int gridZ)
 	int worldZ = gridZ * m_chunkSizeZ;
 	auto callback = [this](int wx, int wy, int wz) { return this->IsSolid(wx, wy, wz); };
 	VoxelMeshGenerator::GenerateMesh(m_voxelDatas[idx], m_meshes[idx], worldX, worldY, worldZ, callback);
-	m_chunks[idx].SetDirty();
 
 }
 
@@ -286,7 +288,8 @@ void ChunkController::RebuildAllDirtyChunks()
 			for (int x = 0; x < m_gridX; ++x)
 			{
 				size_t idx = getIndex(x, y, z);
-				if (idx < m_chunks.size() && m_chunks[idx].GetMesh() != nullptr)
+
+				if (idx < m_chunks.size() && m_chunks[idx].GetDirty() == true)
 				{
 					RebuildChunk(x, y, z);
 				}

@@ -15,6 +15,7 @@ public:
 	void RebuildDirty();
 	Mesh* GetMesh() const { return m_Mesh; }
 	const glm::ivec3& GetPosition() const { return m_position; }
+	bool GetDirty();
 
 private:
 	glm::ivec3 m_position;

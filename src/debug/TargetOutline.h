@@ -13,6 +13,7 @@ public:
 	void Init();
 	void SetTransform(float& posX, float& posY, float& posZ);
 	void Draw(const Camera& camera, Render& renderer, Shader& shader);
+	void SetSize(int& sizeX, int& sizeY,int& sizeZ);
 
 private:
 

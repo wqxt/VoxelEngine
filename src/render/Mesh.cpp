@@ -27,7 +27,8 @@ void Mesh::Draw()
 	glBindVertexArray(0);
 }
 
-void Mesh::Init(const float* positions, size_t posCount, const float* colors, size_t colorCount, const float* uvs, size_t ucCount, const GLuint* indices, size_t indexCount)
+void Mesh::Init(const float* positions, size_t posCount, const float* colors,
+	 size_t colorCount, const float* uvs, size_t ucCount, const GLuint* indices, size_t indexCount)
 {
 	glBindVertexArray(m_VAO);
 

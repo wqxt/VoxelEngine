@@ -26,6 +26,11 @@ void Chunk::SetDirty()
 	m_IsDirty = true;
 }
 
+bool Chunk:: GetDirty()
+{
+	return 	m_IsDirty;
+}
+
 void Chunk::RebuildDirty()
 {
 	m_IsDirty = false;
